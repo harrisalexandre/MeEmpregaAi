@@ -19,6 +19,11 @@ target/
 *.iml
 *.ipr
 
+### Arquivos temporarios locais
+.RemoteSystemsTempFiles
+/RemoteSystemsTempFiles/
+/.RemoteSystemsTempFiles/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
