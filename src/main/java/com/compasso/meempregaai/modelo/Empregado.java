@@ -16,7 +16,8 @@ public class Empregado {
 	private String nome;
 	private long cpf;
 	private LocalDate dataNascimento;
-
+	@ManyToMany(mappedBy = "empregados")
+	private List<Vaga> vagas;
 
 	public Empregado(String nome, long cpf, LocalDate dataNascimento) {
 		this.id = id;

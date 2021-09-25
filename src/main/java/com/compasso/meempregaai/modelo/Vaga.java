@@ -14,7 +14,13 @@ public class Vaga {
     @ManyToOne
     private Empregador empregador;
     private String descricao;
-
+    @ManyToMany
+    @JoinTable(
+        name = "vaga_empregado",
+        joinColumns = @JoinColumn(name = "vaga_id"),
+        inverseJoinColumns = @JoinColumn(name = "empregado_id")
+    )
+    private List<Empregado> empregados;
 
     public Vaga(String nome, String descricao, Empregador empregador) {
         this.nome = nome;
@@ -55,5 +61,13 @@ public class Vaga {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public List<Empregado> getEmpregados() {
+        return empregados;
+    }
+
+    public void setEmpregados(List<Empregado> empregados) {
+        this.empregados = empregados;
     }
 }
