@@ -1,6 +1,7 @@
 package com.compasso.meempregaai.modelo;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "vaga")
@@ -14,7 +15,8 @@ public class Vaga {
     private Empregador empregador;
     private String descricao;
 
-    public Vaga(String nome, Empregador empregador, String descricao) {
+
+    public Vaga(String nome, String descricao, Empregador empregador) {
         this.nome = nome;
         this.empregador = empregador;
         this.descricao = descricao;

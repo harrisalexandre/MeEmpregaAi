@@ -1,12 +1,10 @@
 package com.compasso.meempregaai.modelo;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "empregado")
@@ -17,9 +15,10 @@ public class Empregado {
 	private long id;
 	private String nome;
 	private long cpf;
-	private Date dataNascimento;
+	private LocalDate dataNascimento;
 
-	public Empregado(String nome, long cpf, Date dataNascimento) {
+
+	public Empregado(String nome, long cpf, LocalDate dataNascimento) {
 		this.id = id;
 		this.nome = nome;
 		this.cpf = cpf;
@@ -56,11 +55,11 @@ public class Empregado {
 		this.cpf = cpf;
 	}
 
-	public Date getDataNascimento() {
+	public LocalDate getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(Date dataNascimento) {
+	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 }

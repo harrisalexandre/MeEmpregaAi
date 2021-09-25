@@ -9,19 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
+
 
 
 @RestController
-@RequestMapping("/Empregador")
+@RequestMapping("/empregador")
 public class EmpregadorController {
 
     @Autowired
