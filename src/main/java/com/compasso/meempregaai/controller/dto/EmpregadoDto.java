@@ -23,4 +23,20 @@ public class EmpregadoDto {
     public static List<EmpregadoDto> converter(List<Empregado> empregados) {
         return empregados.stream().map(EmpregadoDto::new).collect(Collectors.toList());
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
 }

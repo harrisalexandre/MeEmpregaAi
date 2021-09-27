@@ -12,14 +12,16 @@ public class VagaDto {
     private String nome;
     private String nomeEmpregador;
     private String descricao;
-    private List<Empregado> empregados;
+    private List<EmpregadoDto> empregados;
+    private long curtidas;
 
     public VagaDto(Vaga vaga) {
         this.id = vaga.getId();
         this.nome = vaga.getNome();
         this.nomeEmpregador = vaga.getEmpregador().getNome();
         this.descricao = vaga.getDescricao();
-        this.empregados = vaga.getEmpregados();
+        this.empregados = EmpregadoDto.converter(vaga.getEmpregados());
+        this.curtidas = vaga.getCurtidas();
     }
 
     public static List<VagaDto> converter(List<Vaga> vagas) {
@@ -42,9 +44,9 @@ public class VagaDto {
         return descricao;
     }
 
-    public List<Empregado> getEmpregados() {
-        return empregados;
-    }
+    public List<EmpregadoDto> getEmpregados() {return empregados;}
+
+    public long getCurtidas() {return curtidas;}
 }
 
 
