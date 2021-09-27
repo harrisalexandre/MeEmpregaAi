@@ -10,7 +10,7 @@ public class EmpregadorDto {
     private long id;
     private String nome;
     private String empresa;
-    private long cnpj;
+    private String cnpj;
 
     public EmpregadorDto(Empregador empregador) {
         this.id = empregador.getId();
@@ -35,7 +35,7 @@ public class EmpregadorDto {
         return empresa;
     }
 
-    public long getCnpj() {
+    public String getCnpj() {
         return cnpj;
     }
 }

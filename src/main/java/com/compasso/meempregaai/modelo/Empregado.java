@@ -14,13 +14,12 @@ public class Empregado {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String nome;
-	private long cpf;
+	private String cpf;
 	private LocalDate dataNascimento;
 	@ManyToMany(mappedBy = "empregados")
 	private List<Vaga> vagas;
 
-	public Empregado(String nome, long cpf, LocalDate dataNascimento) {
-		this.id = id;
+	public Empregado(String nome, String cpf, LocalDate dataNascimento) {
 		this.nome = nome;
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
@@ -30,8 +29,6 @@ public class Empregado {
 	}
 
 	//GETTERS AND SETTERS
-
-
 	public long getId() {
 		return id;
 	}
@@ -48,11 +45,11 @@ public class Empregado {
 		this.nome = nome;
 	}
 
-	public long getCpf() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(long cpf) {
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 

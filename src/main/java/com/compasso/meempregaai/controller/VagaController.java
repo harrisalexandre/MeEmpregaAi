@@ -32,7 +32,7 @@ public class VagaController {
         Vaga vaga = vagaForm.converter(vagaForm, empregadorRepository);
         vagaRepository.save(vaga);
 
-        URI uri = uriBuilder.path("/api/partidos/{id}").buildAndExpand(vaga.getId()).toUri();
+        URI uri = uriBuilder.path("/vaga/{id}").buildAndExpand(vaga.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new VagaDto(vaga));
     }

@@ -15,9 +15,9 @@ public class Empregador {
 	private long id;
 	private String nome;
 	private String empresa;
-	private long cnpj;
+	private String cnpj;
 
-	public Empregador(String nome, String empresa, long cnpj) {
+	public Empregador(String nome, String empresa, String cnpj) {
 		this.nome = nome;
 		this.empresa = empresa;
 		this.cnpj = cnpj;
@@ -53,11 +53,11 @@ public class Empregador {
 		this.empresa = empresa;
 	}
 
-	public long getCnpj() {
+	public String getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(long cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
 }

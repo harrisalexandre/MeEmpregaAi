@@ -15,8 +15,6 @@ public class VagaForm {
     @NotBlank
     private String nomeEmpregador;
 
-
-
     public Vaga converter(VagaForm vagaForm, EmpregadorRepository empregadorRepository) {
         Empregador empregador = empregadorRepository.findByNome(nomeEmpregador);
 
