@@ -2,6 +2,7 @@ package com.compasso.meempregaai.modelo;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class Empregado {
 	private String cpf;
 	private LocalDate dataNascimento;
 	@ManyToMany(mappedBy = "empregados")
-	private List<Vaga> vagas;
+	private List<Vaga> vagas = new ArrayList<>();
 
 	public Empregado(String nome, String cpf, LocalDate dataNascimento) {
 		this.nome = nome;

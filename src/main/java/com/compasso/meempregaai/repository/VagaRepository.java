@@ -4,6 +4,6 @@ import com.compasso.meempregaai.modelo.Vaga;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface VagaRepository extends PagingAndSortingRepository<Vaga, Long>, JpaSpecificationExecutor<Vaga>{
-
+public interface VagaRepository extends PagingAndSortingRepository<Vaga, String>, JpaSpecificationExecutor<Vaga>{
+    Vaga findById(Long id);
 }

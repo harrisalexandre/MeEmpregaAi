@@ -1,6 +1,7 @@
 package com.compasso.meempregaai.modelo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,18 +15,20 @@ public class Vaga {
     @ManyToOne
     private Empregador empregador;
     private String descricao;
+    private long curtidas;
     @ManyToMany
     @JoinTable(
         name = "vaga_empregado",
         joinColumns = @JoinColumn(name = "vaga_id"),
         inverseJoinColumns = @JoinColumn(name = "empregado_id")
     )
-    private List<Empregado> empregados;
+    private List<Empregado> empregados = new ArrayList<>();
 
     public Vaga(String nome, String descricao, Empregador empregador) {
         this.nome = nome;
         this.empregador = empregador;
         this.descricao = descricao;
+        this.curtidas = 0;
     }
 
     public Vaga() {
@@ -70,4 +73,8 @@ public class Vaga {
     public void setEmpregados(List<Empregado> empregados) {
         this.empregados = empregados;
     }
+
+    public long getCurtidas() {return curtidas;}
+
+    public void setCurtidas(long curtidas) {this.curtidas = curtidas;}
 }
