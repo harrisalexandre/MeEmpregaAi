@@ -2,14 +2,10 @@ package com.compasso.meempregaai.controller;
 
 
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
-import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
-import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
 import com.compasso.meempregaai.controller.form.EmpregadoForm;
 import com.compasso.meempregaai.modelo.Empregado;
-import com.compasso.meempregaai.modelo.Empregador;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
-import com.compasso.meempregaai.repository.EmpregadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -39,6 +36,20 @@ public class EmpregadoController {
         URI uri = uriBuilder.path("/empregado/{id}").buildAndExpand(empregado.getId()).toUri();
 
         return ResponseEntity.created(uri).body(empregado);
+    }
+
+    @PostMapping("/{id}/curtir")
+    @Transactional
+    public ResponseEntity<EmpregadoDto> curtirEmpregado (@PathVariable Long id) {
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()){
+            Empregado empregado = optionalEmpregado.get();
+            empregado.setCurtidas(empregado.getCurtidas()+ 1);
+            empregadoRepository.save(empregado);
+            return ResponseEntity.ok(new EmpregadoDto(empregado));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")

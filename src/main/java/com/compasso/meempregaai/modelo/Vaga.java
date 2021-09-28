@@ -15,6 +15,7 @@ public class Vaga {
     @ManyToOne
     private Empregador empregador;
     private String descricao;
+    private boolean ativa;
     private long curtidas;
     @ManyToMany
     @JoinTable(
@@ -29,6 +30,7 @@ public class Vaga {
         this.empregador = empregador;
         this.descricao = descricao;
         this.curtidas = 0;
+        this.ativa = true;
     }
 
     public Vaga() {
@@ -77,4 +79,8 @@ public class Vaga {
     public long getCurtidas() {return curtidas;}
 
     public void setCurtidas(long curtidas) {this.curtidas = curtidas;}
+
+    public boolean isAtiva() {return ativa;}
+
+    public void setAtiva(boolean ativa) {this.ativa = ativa;}
 }

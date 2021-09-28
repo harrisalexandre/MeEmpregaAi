@@ -1,8 +1,6 @@
 package com.compasso.meempregaai.controller.form;
 
 import com.compasso.meempregaai.modelo.Empregado;
-import org.hibernate.validator.constraints.br.CPF;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
