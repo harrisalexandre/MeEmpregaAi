@@ -13,6 +13,7 @@ public class VagaDto {
     private String nomeEmpregador;
     private String descricao;
     private List<EmpregadoDto> empregados;
+    private boolean ativa;
     private long curtidas;
 
     public VagaDto(Vaga vaga) {
@@ -22,6 +23,7 @@ public class VagaDto {
         this.descricao = vaga.getDescricao();
         this.empregados = EmpregadoDto.converter(vaga.getEmpregados());
         this.curtidas = vaga.getCurtidas();
+        this.ativa = vaga.isAtiva();
     }
 
     public static List<VagaDto> converter(List<Vaga> vagas) {
@@ -47,6 +49,8 @@ public class VagaDto {
     public List<EmpregadoDto> getEmpregados() {return empregados;}
 
     public long getCurtidas() {return curtidas;}
+
+    public boolean isAtiva() {return ativa;}
 }
 
 

@@ -1,6 +1,5 @@
 package com.compasso.meempregaai.modelo;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +16,17 @@ public class Empregado {
 	private String nome;
 	private String cpf;
 	private LocalDate dataNascimento;
+	private long curtidas;
 	@ManyToMany(mappedBy = "empregados")
 	private List<Vaga> vagas = new ArrayList<>();
+	@ManyToMany(mappedBy = "empregados")
+	private List<Empregador> empregadores = new ArrayList<>();
 
 	public Empregado(String nome, String cpf, LocalDate dataNascimento) {
 		this.nome = nome;
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
+		this.curtidas = 0;
 	}
 
 	public Empregado() {
@@ -61,4 +64,8 @@ public class Empregado {
 	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
+
+	public long getCurtidas() {return curtidas;}
+
+	public void setCurtidas(long curtidas) {this.curtidas = curtidas;}
 }

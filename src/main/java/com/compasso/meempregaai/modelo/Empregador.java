@@ -1,10 +1,8 @@
 package com.compasso.meempregaai.modelo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "empregador")
@@ -16,6 +14,13 @@ public class Empregador {
 	private String nome;
 	private String empresa;
 	private String cnpj;
+	@ManyToMany
+	@JoinTable(
+			name = "empregador_empregado",
+			joinColumns = @JoinColumn(name = "empregador_id"),
+			inverseJoinColumns = @JoinColumn(name = "empregado_id")
+	)
+	private List<Empregado> empregados = new ArrayList<>();
 
 	public Empregador(String nome, String empresa, String cnpj) {
 		this.nome = nome;
@@ -60,4 +65,8 @@ public class Empregador {
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
+
+	public List<Empregado> getEmpregados() {return empregados;}
+
+	public void setEmpregados(List<Empregado> empregados) {this.empregados = empregados;}
 }
