@@ -53,7 +53,7 @@ public class EmpregadoController {
     }
 
     @GetMapping
-    public ResponseEntity<?> listaEmpregador (BuscaEmpregadoForm form, Pageable pageable){
+    public ResponseEntity<?> listaEmpregado (BuscaEmpregadoForm form, Pageable pageable){
 
         List<Empregado> empregados = empregadoRepository.findAll(form.toSpec(), pageable).getContent();
         if(empregados.size()> 0) {
