@@ -1,6 +1,8 @@
 package com.compasso.meempregaai.controller.form;
 
 import com.compasso.meempregaai.modelo.Empregado;
+
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -14,6 +16,10 @@ public class EmpregadoForm {
     private String cpf;
     @NotNull @Past
     private LocalDate dataNascimento;
+    @NotBlank @Email
+    private String email;
+    @NotBlank
+    private String senha;
 
     public Empregado converter(EmpregadoForm empregadoForm) {
         return new Empregado(nome, cpf, dataNascimento);
