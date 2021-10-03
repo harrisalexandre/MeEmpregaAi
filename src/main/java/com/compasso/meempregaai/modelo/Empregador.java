@@ -6,48 +6,21 @@ import java.util.List;
 
 @Entity
 @Table(name = "empregador")
-public class Empregador {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	private String nome;
+public class Empregador extends Usuario{
+
 	private String empresa;
 	private String cnpj;
 	@ManyToMany
-	@JoinTable(
-			name = "empregador_empregado",
-			joinColumns = @JoinColumn(name = "empregador_id"),
-			inverseJoinColumns = @JoinColumn(name = "empregado_id")
-	)
+	@JoinTable(name = "empregador_empregado", joinColumns = @JoinColumn(name = "empregador_id"), inverseJoinColumns = @JoinColumn(name = "empregado_id"))
 	private List<Empregado> empregados = new ArrayList<>();
 
 	public Empregador(String nome, String empresa, String cnpj) {
-		this.nome = nome;
+		this.setNome(nome);
 		this.empresa = empresa;
 		this.cnpj = cnpj;
 	}
 
 	public Empregador() {
-	}
-
-	//GETTERS AND SETTERS
-	//SEM GET E SET DE ID
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
 	}
 
 	public String getEmpresa() {
