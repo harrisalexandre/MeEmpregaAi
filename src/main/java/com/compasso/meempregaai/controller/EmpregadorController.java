@@ -7,8 +7,10 @@ import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
 import com.compasso.meempregaai.controller.form.EmpregadorForm;
 import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Empregador;
+import com.compasso.meempregaai.modelo.Perfil;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
+import com.compasso.meempregaai.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,16 +36,25 @@ public class EmpregadorController {
     @Autowired
     private EmpregadoRepository empregadoRepository;
 
+    @Autowired
+    private PerfilRepository perfilRepository;
 
     @PostMapping
-    public ResponseEntity<Empregador> cadastrarEmpregador(@RequestBody @Valid EmpregadorForm empregadorForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<EmpregadorDto> cadastrarEmpregador(@RequestBody @Valid EmpregadorForm empregadorForm, UriComponentsBuilder uriBuilder) {
 
         Empregador empregador = empregadorForm.converter(empregadorForm);
-        empregadorRepository.save(empregador);
+        Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(1l));
 
-        URI uri = uriBuilder.path("/empregado/{id}").buildAndExpand(empregador.getId()).toUri();
+        if(optionalPerfil.isPresent()){
+            List<Perfil> perfils = new ArrayList<>();
+            perfils.add(optionalPerfil.get());
+            empregador.setPerfis(perfils);
+            empregadorRepository.save(empregador);
+            URI uri = uriBuilder.path("/empregador/{id}").buildAndExpand(empregador.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(empregador);
+            return ResponseEntity.created(uri).body(new EmpregadorDto(empregador));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{idEmpregador}/contratar/{idEmpregado}")
