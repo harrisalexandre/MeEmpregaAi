@@ -14,10 +14,13 @@ public class Empregador extends Usuario{
 	@JoinTable(name = "empregador_empregado", joinColumns = @JoinColumn(name = "empregador_id"), inverseJoinColumns = @JoinColumn(name = "empregado_id"))
 	private List<Empregado> empregados = new ArrayList<>();
 
-	public Empregador(String nome, String empresa, String cnpj) {
+	public Empregador(String nome, String empresa, String cnpj, String email, String senha) {
 		this.setNome(nome);
+		this.setEmail(email);
+		this.setSenha(senha);
 		this.empresa = empresa;
 		this.cnpj = cnpj;
+		this.setTipo("ER ");
 	}
 
 	public Empregador() {

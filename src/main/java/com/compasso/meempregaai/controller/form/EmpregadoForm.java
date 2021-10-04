@@ -16,13 +16,13 @@ public class EmpregadoForm {
     private String cpf;
     @NotNull @Past
     private LocalDate dataNascimento;
-    @NotBlank @Email
+    @Email
     private String email;
     @NotBlank
     private String senha;
 
     public Empregado converter(EmpregadoForm empregadoForm) {
-        return new Empregado(nome, cpf, dataNascimento);
+        return new Empregado(nome, cpf, dataNascimento, email, senha);
     }
 
     public void setNome(String nome) {
@@ -36,4 +36,8 @@ public class EmpregadoForm {
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
+
+    public void setEmail(String email) {this.email = email;}
+
+    public void setSenha(String senha) {this.senha = senha;}
 }
