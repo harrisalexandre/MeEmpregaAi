@@ -12,21 +12,20 @@ import java.util.List;
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String nome;
     private String email;
     private String senha;
+    private String tipo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Perfil> perfis = new ArrayList<>();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    public void setId(Long id) {this.id = id;}
 
     public String getNome() {
         return nome;
@@ -36,9 +35,7 @@ public class Usuario implements UserDetails {
         this.nome = nome;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() {return email;}
 
     public void setEmail(String email) {
         this.email = email;
@@ -52,25 +49,27 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return perfis;
+    public List<Perfil> getPerfis() {return perfis;}
+
+    public void setPerfis(List<Perfil> perfis) {
+        this.perfis = perfis;
     }
 
-    @Override
-    public String getPassword() {
-        return getSenha();
-    }
+    public String getTipo() {return tipo;}
+
+    public void setTipo(String tipo) {this.tipo = tipo;}
 
     @Override
-    public String getUsername() {
-        return getEmail();
-    }
+    public Collection<? extends GrantedAuthority> getAuthorities() {return perfis;}
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public String getPassword() {return getSenha();}
+
+    @Override
+    public String getUsername() {return getEmail();}
+
+    @Override
+    public boolean isAccountNonExpired() {return true;}
 
     @Override
     public boolean isAccountNonLocked() {

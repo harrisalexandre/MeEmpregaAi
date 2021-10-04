@@ -7,6 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface EmpregadoRepository extends PagingAndSortingRepository<Empregado, String>, JpaSpecificationExecutor<Empregado>{
     Empregado findById(Long id);
-
     Empregado findByEmail(String userName);
 }

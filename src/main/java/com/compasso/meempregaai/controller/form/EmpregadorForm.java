@@ -1,6 +1,8 @@
 package com.compasso.meempregaai.controller.form;
 
 import com.compasso.meempregaai.modelo.Empregador;
+
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class EmpregadorForm {
@@ -11,9 +13,13 @@ public class EmpregadorForm {
     private String empresa;
     @NotBlank
     private String cnpj;
+    @Email
+    private String email;
+    @NotBlank
+    private String senha;
 
     public Empregador converter(EmpregadorForm empregadorForm) {
-        return new Empregador(nome, empresa, cnpj);
+        return new Empregador(nome, empresa, cnpj, email, senha);
     }
 
     public void setNome(String nome) {
@@ -27,4 +33,8 @@ public class EmpregadorForm {
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
+
+    public void setEmail(String email) {this.email = email;}
+
+    public void setSenha(String senha) {this.senha = senha;}
 }

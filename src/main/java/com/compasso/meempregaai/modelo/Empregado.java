@@ -21,11 +21,14 @@ public class Empregado extends Usuario{
 	@ManyToMany(mappedBy = "empregados")
 	private List<Empregador> empregadores = new ArrayList<>();
 
-	public Empregado(String nome, String cpf, LocalDate dataNascimento) {
+	public Empregado(String nome, String cpf, LocalDate dataNascimento, String email, String senha) {
 		this.setNome(nome);
+		this.setEmail(email);
+		this.setSenha(senha);
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
 		this.curtidas = 0;
+		this.setTipo("EO ");
 	}
 
 	public Empregado() {
