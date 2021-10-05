@@ -1,6 +1,7 @@
 package com.compasso.meempregaai.controller.form;
 
 import com.compasso.meempregaai.modelo.Empregador;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -19,7 +20,7 @@ public class EmpregadorForm {
     private String senha;
 
     public Empregador converter(EmpregadorForm empregadorForm) {
-        return new Empregador(nome, empresa, cnpj, email, senha);
+        return new Empregador(nome, empresa, cnpj, email, new BCryptPasswordEncoder().encode(senha));
     }
 
     public void setNome(String nome) {
