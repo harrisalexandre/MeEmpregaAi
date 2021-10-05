@@ -97,6 +97,4 @@ public class EmpregadorController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 }
