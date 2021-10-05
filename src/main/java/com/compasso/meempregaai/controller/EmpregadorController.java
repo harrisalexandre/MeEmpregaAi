@@ -43,7 +43,7 @@ public class EmpregadorController {
     public ResponseEntity<EmpregadorDto> cadastrarEmpregador(@RequestBody @Valid EmpregadorForm empregadorForm, UriComponentsBuilder uriBuilder) {
 
         Empregador empregador = empregadorForm.converter(empregadorForm);
-        Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(1l));
+        Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(2l));
 
         if(optionalPerfil.isPresent()){
             List<Perfil> perfils = new ArrayList<>();
@@ -94,6 +94,19 @@ public class EmpregadorController {
             List<Empregado> empregados = empregador.getEmpregados();
 
             return ResponseEntity.ok(EmpregadoDto.converter(empregados));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> detalhaEmpregador (@PathVariable Long id){
+
+        Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
+
+        if(optionalEmpregador.isPresent()){
+            Empregador empregador = optionalEmpregador.get();
+
+            return ResponseEntity.ok(new EmpregadorDto(empregador));
         }
         return ResponseEntity.notFound().build();
     }

@@ -3,22 +3,21 @@ package com.compasso.meempregaai.controller.dto;
 import com.compasso.meempregaai.modelo.Curriculo;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CurriculoDto {
-    private long id;
     private String nome;
     private String email;
-    private long contato;
+    private String contato;
     private String endereco;
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
     private String experienciaProfissional;
     private String escolaridade;
     private String conhecimentoHabilidades;
 
     public CurriculoDto(Curriculo curriculo){
-        this.id = curriculo.getId();
         this.nome = curriculo.getNome();
         this.email = curriculo.getEmail();
         this.contato = curriculo.getContato();
@@ -29,21 +28,15 @@ public class CurriculoDto {
         this.conhecimentoHabilidades = curriculo.getConhecimentoHabilidades();
     }
 
-    public static List<CurriculoDto> converter(List<Curriculo>curriculos){
-        return curriculos.stream().map(CurriculoDto::new).collect(Collectors.toList());
-    }
-
-    public long getId() {return id;}
-
     public String getNome() {return nome;}
 
     public String getEmail() {return email;}
 
-    public long getContato() {return contato;}
+    public String getContato() {return contato;}
 
     public String getEndereco() {return endereco;}
 
-    public Date getDataNascimento() {return dataNascimento;}
+    public LocalDate getDataNascimento() {return dataNascimento;}
 
     public String getExperienciaProfissional() {return experienciaProfissional;}
 

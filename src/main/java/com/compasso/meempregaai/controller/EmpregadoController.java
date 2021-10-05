@@ -1,11 +1,15 @@
 package com.compasso.meempregaai.controller;
 
 
+import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
+import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
 import com.compasso.meempregaai.controller.form.EmpregadoForm;
+import com.compasso.meempregaai.modelo.Curriculo;
 import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Perfil;
+import com.compasso.meempregaai.repository.CurriculoRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +37,11 @@ public class EmpregadoController {
     @Autowired
     private PerfilRepository perfilRepository;
 
+    @Autowired
+    private CurriculoRepository curriculoRepository;
+
     @PostMapping
+    @Transactional
     public ResponseEntity<EmpregadoDto> cadastrarEmpregado(@RequestBody @Valid EmpregadoForm empregadoForm, UriComponentsBuilder uriBuilder) {
 
         Empregado empregado = empregadoForm.converter(empregadoForm);
@@ -43,6 +51,9 @@ public class EmpregadoController {
             List<Perfil> perfils = new ArrayList<>();
             perfils.add(optionalPerfil.get());
             empregado.setPerfis(perfils);
+            Curriculo curriculo = new Curriculo(empregado);
+            curriculoRepository.save(curriculo);
+            empregado.setCurriculo(curriculo);
             empregadoRepository.save(empregado);
             URI uri = uriBuilder.path("/empregado/{id}").buildAndExpand(empregado.getId()).toUri();
 
@@ -85,4 +96,49 @@ public class EmpregadoController {
         }
         return ResponseEntity.notFound().build();
     }
+    @GetMapping("/{id}/curriculo")
+    public ResponseEntity<?> detalhaCurriculo (@PathVariable Long id){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Curriculo curriculo = optionalEmpregado.get().getCurriculo();
+            return ResponseEntity.ok(new CurriculoDto(curriculo));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/curriculo")
+    @Transactional
+    public ResponseEntity<?> atualizaCurriculo (@PathVariable Long id, @RequestBody @Valid AtualizaCurriculoForm form){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            Curriculo curriculo = form.atualizar(empregado.getCurriculo().getId(), curriculoRepository);
+            return ResponseEntity.ok(new CurriculoDto(curriculo));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}/curriculo")
+    @Transactional
+    public ResponseEntity<?> resetarCurriculo (@PathVariable Long id){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            Curriculo curriculo = new AtualizaCurriculoForm().resetar(empregado.getCurriculo().getId(), curriculoRepository);
+            return ResponseEntity.ok(new CurriculoDto(curriculo));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+
+
+
+
 }

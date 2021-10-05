@@ -11,12 +11,14 @@ public class EmpregadorDto {
     private String nome;
     private String empresa;
     private String cnpj;
+    private List<EmpregadoDto> empregados;
 
     public EmpregadorDto(Empregador empregador) {
         this.id = empregador.getId();
         this.nome = empregador.getNome();
         this.empresa = empregador.getEmpresa();
         this.cnpj = empregador.getCnpj();
+        this.empregados = EmpregadoDto.converter(empregador.getEmpregados());
     }
 
     public static List<EmpregadorDto> converter(List<Empregador> associados) {
@@ -38,4 +40,6 @@ public class EmpregadorDto {
     public String getCnpj() {
         return cnpj;
     }
+
+    public List<EmpregadoDto> getEmpregados() {return empregados;}
 }

@@ -16,6 +16,8 @@ public class Empregado extends Usuario{
 	private List<Vaga> vagas = new ArrayList<>();
 	@ManyToMany(mappedBy = "empregados")
 	private List<Empregador> empregadores = new ArrayList<>();
+	@OneToOne
+	private Curriculo curriculo;
 
 	public Empregado(String nome, String cpf, LocalDate dataNascimento, String email, String senha) {
 		this.setNome(nome);
@@ -51,4 +53,8 @@ public class Empregado extends Usuario{
 	public long getCurtidas() {return curtidas;}
 
 	public void setCurtidas(long curtidas) {this.curtidas = curtidas;}
+
+	public Curriculo getCurriculo() {return curriculo;}
+
+	public void setCurriculo(Curriculo curriculo) {this.curriculo = curriculo;}
 }
