@@ -8,11 +8,14 @@ import com.compasso.meempregaai.controller.form.EmpregadorForm;
 import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Empregador;
 import com.compasso.meempregaai.modelo.Perfil;
+import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
@@ -59,17 +62,20 @@ public class EmpregadorController {
 
     @PostMapping("/{idEmpregador}/contratar/{idEmpregado}")
     @Transactional
-    public ResponseEntity<EmpregadorDto> contratarEmpregado (@PathVariable Long idEmpregador, @PathVariable Long idEmpregado) {
+    public ResponseEntity<EmpregadorDto> contratarEmpregado (@PathVariable Long idEmpregador, @AuthenticationPrincipal Usuario logado, @PathVariable Long idEmpregado) {
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(idEmpregador));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));
 
         if(optionalEmpregador.isPresent() && optionalEmpregado.isPresent()){
             Empregador empregador = optionalEmpregador.get();
-            Empregado empregado = optionalEmpregado.get();
-            empregador.getEmpregados().add(empregado);
-            empregadorRepository.save(empregador);
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                Empregado empregado = optionalEmpregado.get();
+                empregador.getEmpregados().add(empregado);
+                empregadorRepository.save(empregador);
 
-            return ResponseEntity.ok(new EmpregadorDto(empregador));
+                return ResponseEntity.ok(new EmpregadorDto(empregador));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
