@@ -1,12 +1,11 @@
 package com.compasso.meempregaai.controller;
+import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadorDto;
+import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
 import com.compasso.meempregaai.controller.form.EmpregadorForm;
-import com.compasso.meempregaai.modelo.Empregado;
-import com.compasso.meempregaai.modelo.Empregador;
-import com.compasso.meempregaai.modelo.Perfil;
-import com.compasso.meempregaai.modelo.Usuario;
+import com.compasso.meempregaai.modelo.*;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
@@ -121,4 +120,22 @@ public class EmpregadorController {
         }
         return ResponseEntity.notFound().build();
     }
+    @PutMapping("/{id}/empregador")
+    @Transactional
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
+    public ResponseEntity<?> atualizarEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid EmpregadorForm form){
+
+        Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
+
+        if(optionalEmpregador.isPresent()) {
+            Empregador empregador = optionalEmpregador.get();
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                Empregador empregador1 = form.atualizar(empregador.getEmpregador().getId(), empregadorRepository);
+                return ResponseEntity.ok(new EmpregadorDto(empregador1));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }

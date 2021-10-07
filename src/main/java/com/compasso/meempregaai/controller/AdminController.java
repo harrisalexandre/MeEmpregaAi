@@ -46,7 +46,7 @@ public class AdminController {
         }
         return ResponseEntity.notFound().build();
     }
-    @PutMapping
+    @PutMapping("/{id}/admin")
     @Transactional
     public ResponseEntity<?> atualizarAdmin (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AdminForm form){
         Optional<Admin> optionalAdmin = Optional.ofNullable(adminRepository.findById(id));
