@@ -1,6 +1,4 @@
 package com.compasso.meempregaai.controller;
-
-
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
@@ -8,6 +6,7 @@ import com.compasso.meempregaai.controller.form.EmpregadorForm;
 import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Empregador;
 import com.compasso.meempregaai.modelo.Perfil;
+import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
@@ -65,7 +64,6 @@ public class EmpregadorController {
     @PostMapping("/{idEmpregador}/contratar/{idEmpregado}")
     @Transactional
     @CacheEvict(value = "listaEmpregador",allEntries = true)
-    public ResponseEntity<EmpregadorDto> contratarEmpregado (@PathVariable Long idEmpregador, @PathVariable Long idEmpregado) {
     public ResponseEntity<EmpregadorDto> contratarEmpregado (@PathVariable Long idEmpregador, @AuthenticationPrincipal Usuario logado, @PathVariable Long idEmpregado) {
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(idEmpregador));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));

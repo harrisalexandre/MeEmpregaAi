@@ -1,9 +1,6 @@
 package com.compasso.meempregaai.controller;
 
-
-import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.dto.VagaDto;
-import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
 import com.compasso.meempregaai.controller.form.BuscaVagaForm;
 import com.compasso.meempregaai.controller.form.VagaForm;
 import com.compasso.meempregaai.modelo.Empregado;
@@ -114,8 +111,6 @@ public class VagaController {
     @Transactional
 
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
-    public ResponseEntity<?> inativaVaga (@PathVariable Long id){
-
     public ResponseEntity<?> inativaVaga (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
