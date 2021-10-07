@@ -13,6 +13,8 @@ import com.compasso.meempregaai.repository.CurriculoRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,7 @@ public class EmpregadoController {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = "listarUmEmpregado",allEntries = true)
     public ResponseEntity<EmpregadoDto> cadastrarEmpregado(@RequestBody @Valid EmpregadoForm empregadoForm, UriComponentsBuilder uriBuilder) {
 
         Empregado empregado = empregadoForm.converter(empregadoForm);
@@ -64,6 +67,7 @@ public class EmpregadoController {
 
     @PostMapping("/{id}/curtir")
     @Transactional
+    @CacheEvict(value = "listarUmEmpregado",allEntries = true)
     public ResponseEntity<EmpregadoDto> curtirEmpregado (@PathVariable Long id) {
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
 
@@ -77,6 +81,7 @@ public class EmpregadoController {
     }
 
     @GetMapping("/{id}")
+    @Cacheable(value = "buscarUmEmpregado")
     public ResponseEntity<?> detalhaEmpregado (@PathVariable Long id){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
@@ -88,6 +93,7 @@ public class EmpregadoController {
     }
 
     @GetMapping
+    @Cacheable(value = "listarUmEmpregado")
     public ResponseEntity<?> listaEmpregado (BuscaEmpregadoForm form, Pageable pageable){
 
         List<Empregado> empregados = empregadoRepository.findAll(form.toSpec(), pageable).getContent();

@@ -13,6 +13,8 @@ import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,7 @@ public class VagaController {
     private EmpregadoRepository empregadoRepository;
 
     @PostMapping
+    @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<VagaDto> cadastrarVaga(@RequestBody @Valid VagaForm vagaForm, UriComponentsBuilder uriBuilder) {
 
         Vaga vaga = vagaForm.converter(vagaForm, empregadorRepository);
@@ -50,6 +53,7 @@ public class VagaController {
 
     @PostMapping("/{idEmpregado}/candidatar/{idVaga}")
     @Transactional
+    @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<VagaDto> condidatarVaga(@PathVariable Long idEmpregado, @PathVariable Long idVaga) {
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(idVaga));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));
@@ -67,6 +71,7 @@ public class VagaController {
 
     @PostMapping("/{id}/curtir")
     @Transactional
+    @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<VagaDto> curtirVaga (@PathVariable Long id) {
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
 
@@ -80,6 +85,7 @@ public class VagaController {
     }
 
     @GetMapping("/{id}")
+    @Cacheable(value = "buscarVagaPorId")
     public ResponseEntity<?> detalhaVaga (@PathVariable Long id){
 
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
@@ -91,6 +97,7 @@ public class VagaController {
     }
 
     @GetMapping
+    @Cacheable(value = "buscarListaVaga")
     public ResponseEntity<?> listaVaga (BuscaVagaForm form, Pageable pageable){
 
         List<Vaga> vagas = vagaRepository.findAll(form.toSpec(), pageable).getContent();
@@ -102,6 +109,7 @@ public class VagaController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<?> inativaVaga (@PathVariable Long id){
 
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
@@ -114,9 +122,5 @@ public class VagaController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
-
-
 
 }

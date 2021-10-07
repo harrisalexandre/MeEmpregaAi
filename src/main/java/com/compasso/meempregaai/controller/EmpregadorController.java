@@ -12,6 +12,8 @@ import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +42,7 @@ public class EmpregadorController {
     private PerfilRepository perfilRepository;
 
     @PostMapping
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<EmpregadorDto> cadastrarEmpregador(@RequestBody @Valid EmpregadorForm empregadorForm, UriComponentsBuilder uriBuilder) {
 
         Empregador empregador = empregadorForm.converter(empregadorForm);
@@ -59,6 +62,7 @@ public class EmpregadorController {
 
     @PostMapping("/{idEmpregador}/contratar/{idEmpregado}")
     @Transactional
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<EmpregadorDto> contratarEmpregado (@PathVariable Long idEmpregador, @PathVariable Long idEmpregado) {
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(idEmpregador));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));
@@ -75,6 +79,7 @@ public class EmpregadorController {
     }
 
     @GetMapping
+    @Cacheable(value = "listaEmpregador")
     public ResponseEntity<?> listaEmpregador (BuscaEmpregadorForm form, Pageable pageable){
 
         List<Empregador> empregadores = empregadorRepository.findAll(form.toSpec(), pageable).getContent();
@@ -85,6 +90,7 @@ public class EmpregadorController {
     }
 
     @GetMapping("/{id}/empregados")
+    @Cacheable(value = "listaEmpregadosDoEmpregador")
     public ResponseEntity<?> listaEmpregadosDoEmpregador (@PathVariable Long id){
 
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
