@@ -109,6 +109,7 @@ public class EmpregadorController {
     }
 
     @GetMapping("/{id}")
+    @Cacheable(value = "listaEmpregadosDoEmpregadorPorId")
     public ResponseEntity<?> detalhaEmpregador (@PathVariable Long id){
 
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));

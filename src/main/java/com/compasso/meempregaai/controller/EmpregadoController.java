@@ -104,6 +104,7 @@ public class EmpregadoController {
         return ResponseEntity.notFound().build();
     }
     @GetMapping("/{id}/curriculo")
+    @Cacheable(value = "buscarCurriculoPorId")
     public ResponseEntity<?> detalhaCurriculo (@PathVariable Long id){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
@@ -117,6 +118,7 @@ public class EmpregadoController {
 
     @PutMapping("/{id}/curriculo")
     @Transactional
+    @CacheEvict(value = "buscarCurriculoPorId",allEntries = true)
     public ResponseEntity<?> atualizaCurriculo (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AtualizaCurriculoForm form){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
@@ -134,6 +136,7 @@ public class EmpregadoController {
 
     @DeleteMapping("/{id}/curriculo")
     @Transactional
+    @CacheEvict(value = "buscarCurriculoPorId",allEntries = true)
     public ResponseEntity<?> resetarCurriculo (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));

@@ -109,7 +109,6 @@ public class VagaController {
 
     @DeleteMapping("/{id}")
     @Transactional
-
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<?> inativaVaga (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 

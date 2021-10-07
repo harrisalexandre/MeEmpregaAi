@@ -1,6 +1,7 @@
 package com.compasso.meempregaai.controller.dto;
 
 import com.compasso.meempregaai.modelo.Admin;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AdminDto {
 
@@ -9,6 +10,9 @@ public class AdminDto {
     private String email;
     private String senha;
 
+    @Autowired
+    public Admin admin;
+
     public AdminDto(Admin admin) {
         this.id = id;
         this.nome = nome;
@@ -16,6 +20,10 @@ public class AdminDto {
         this.senha = senha;
 
     }
+
+    public static Admin getAdmin() {return getAdmin();
+    }
+
 
     public Long getId() {
         return id;
