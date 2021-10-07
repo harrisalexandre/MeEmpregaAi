@@ -5,6 +5,7 @@ import com.compasso.meempregaai.modelo.Vaga;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class VagaForm {
 
@@ -12,11 +13,11 @@ public class VagaForm {
     private String nome;
     @NotBlank
     private String descricao;
-    @NotBlank
-    private String nomeEmpregador;
+    @NotNull
+    private Long empregadorId;
 
     public Vaga converter(VagaForm vagaForm, EmpregadorRepository empregadorRepository) {
-        Empregador empregador = empregadorRepository.findByNome(nomeEmpregador);
+        Empregador empregador = empregadorRepository.findById(empregadorId);
 
         return new Vaga(nome, descricao, empregador);
     }
@@ -29,8 +30,8 @@ public class VagaForm {
         this.descricao = descricao;
     }
 
-    public void setNomeEmpregador(String nomeEmpregador) {
-        this.nomeEmpregador = nomeEmpregador;
+    public void setEmpregadorId(Long empregadorId) {
+        this.empregadorId = empregadorId;
     }
 
 }

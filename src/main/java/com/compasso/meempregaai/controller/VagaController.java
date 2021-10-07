@@ -8,13 +8,16 @@ import com.compasso.meempregaai.controller.form.BuscaVagaForm;
 import com.compasso.meempregaai.controller.form.VagaForm;
 import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Empregador;
+import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.modelo.Vaga;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -102,15 +105,19 @@ public class VagaController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> inativaVaga (@PathVariable Long id){
+    public ResponseEntity<?> inativaVaga (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
 
         if(optionalVaga.isPresent()) {
             Vaga vaga = optionalVaga.get();
-            vaga.setAtiva(false);
-            vagaRepository.save(vaga);
-            return ResponseEntity.ok(new VagaDto(optionalVaga.get()));
+            Empregador empregador = vaga.getEmpregador();
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                vaga.setAtiva(false);
+                vagaRepository.save(vaga);
+                return ResponseEntity.ok(new VagaDto(optionalVaga.get()));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
