@@ -1,8 +1,10 @@
 package com.compasso.meempregaai.controller;
 
 import com.compasso.meempregaai.controller.dto.AdminDto;
+import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.form.AdminForm;
 import com.compasso.meempregaai.modelo.Admin;
+import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Perfil;
 import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.AdminRepository;
@@ -60,5 +62,20 @@ public class AdminController {
             return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return  ResponseEntity.notFound().build();
+    }
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> inativarAdmin (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Admin> optionalAdmin = Optional.ofNullable(adminRepository.findById(id));
+
+        if(optionalAdmin.isPresent()) {
+            Admin admin = optionalAdmin.get();
+            if(logado.getId().equals(admin.getId()) && logado.getTipo().equals(admin.getTipo())){
+                admin.setAtivo(false);
+                return ResponseEntity.ok(new AdminDto(admin));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
