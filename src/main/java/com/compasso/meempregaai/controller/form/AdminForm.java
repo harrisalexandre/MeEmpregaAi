@@ -11,9 +11,6 @@ import java.util.Optional;
 
 public class AdminForm {
 
-    @Autowired
-    private EmpregadorRepository empregadorRepository;
-
     @NotBlank
     private String nome;
     @Email

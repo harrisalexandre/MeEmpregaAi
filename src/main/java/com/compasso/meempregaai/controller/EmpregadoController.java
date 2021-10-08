@@ -2,7 +2,9 @@ package com.compasso.meempregaai.controller;
 
 import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
+import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
+import com.compasso.meempregaai.controller.form.AtualizarEmpregado;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
 import com.compasso.meempregaai.controller.form.EmpregadoForm;
 import com.compasso.meempregaai.modelo.Curriculo;
@@ -150,5 +152,56 @@ public class EmpregadoController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> inativarEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                empregado.setAtivo(false);
+                return ResponseEntity.ok(new EmpregadoDto(empregado));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> reativarEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                empregado.setAtivo(true);
+                return ResponseEntity.ok(new EmpregadoDto(empregado));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> atualizaEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AtualizarEmpregado form){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                empregado = form.atualizar(id, empregadoRepository);
+                return ResponseEntity.ok(new EmpregadoDto(empregado));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
 
 }

@@ -13,6 +13,7 @@ public class EmpregadoDto {
     private String cpf;
     private LocalDate dataNascimento;
     private long curtidas;
+    private boolean ativo;
 
     public EmpregadoDto(Empregado empregado) {
         this.id = empregado.getId();
@@ -20,6 +21,7 @@ public class EmpregadoDto {
         this.cpf = empregado.getCpf();
         this.dataNascimento = empregado.getDataNascimento();
         this.curtidas = empregado.getCurtidas();
+        this.ativo = empregado.isAtivo();
     }
 
     public static List<EmpregadoDto> converter(List<Empregado> empregados) {
@@ -35,4 +37,6 @@ public class EmpregadoDto {
     public LocalDate getDataNascimento() {return dataNascimento;}
 
     public long getCurtidas() {return curtidas;}
+
+    public boolean isAtivo() {return ativo;}
 }

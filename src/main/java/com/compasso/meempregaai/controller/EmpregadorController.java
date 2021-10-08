@@ -138,4 +138,36 @@ public class EmpregadorController {
         return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> inativarEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
+
+        if(optionalEmpregador.isPresent()) {
+            Empregador empregador = optionalEmpregador.get();
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                empregador.setAtivo(false);
+                return ResponseEntity.ok(new EmpregadorDto(empregador));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> reativarEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
+
+        if(optionalEmpregador.isPresent()) {
+            Empregador empregador = optionalEmpregador.get();
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                empregador.setAtivo(true);
+                return ResponseEntity.ok(new EmpregadorDto(empregador));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
