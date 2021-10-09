@@ -1,7 +1,30 @@
 package com.compasso.meempregaai.controller;
 
 
-import com.compasso.meempregaai.config.security.AutenticacaoService;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
@@ -14,26 +37,11 @@ import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.CurriculoRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/empregado")
 public class EmpregadoController {
-
+	
     @Autowired
     private EmpregadoRepository empregadoRepository;
 
@@ -89,10 +97,20 @@ public class EmpregadoController {
         }
         return ResponseEntity.notFound().build();
     }
-
+    
+//
+//    //em teste
+//    
+//    @GetMapping ("/empregado")
+//    public String empregado(Model model) {
+//
+//    	model.addAllAttributes("empregados", empregado);
+//    	return "empregado";
+//    }
+    
     @GetMapping
     public ResponseEntity<?> listaEmpregado (BuscaEmpregadoForm form, Pageable pageable){
-
+    	
         List<Empregado> empregados = empregadoRepository.findAll(form.toSpec(), pageable).getContent();
         if(empregados.size()> 0) {
             return ResponseEntity.ok(EmpregadoDto.converter(empregados));
