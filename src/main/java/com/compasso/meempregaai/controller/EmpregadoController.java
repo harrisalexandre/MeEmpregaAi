@@ -98,16 +98,6 @@ public class EmpregadoController {
         return ResponseEntity.notFound().build();
     }
     
-//
-//    //em teste
-//    
-//    @GetMapping ("/empregado")
-//    public String empregado(Model model) {
-//
-//    	model.addAllAttributes("empregados", empregado);
-//    	return "empregado";
-//    }
-    
     @GetMapping
     public ResponseEntity<?> listaEmpregado (BuscaEmpregadoForm form, Pageable pageable){
     	
