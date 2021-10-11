@@ -1,7 +1,5 @@
 package com.compasso.meempregaai.modelo;
 
-import com.compasso.meempregaai.controller.dto.AdminDto;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +10,8 @@ public class Empregador extends Usuario{
 
 	private String empresa;
 	private String cnpj;
-	@ManyToMany
-	@JoinTable(name = "empregador_empregado", joinColumns = @JoinColumn(name = "empregador_id"), inverseJoinColumns = @JoinColumn(name = "empregado_id"))
-	private List<Empregado> empregados = new ArrayList<>();
+	@OneToMany(mappedBy = "empregador")
+	private List<Contrato> contratos = new ArrayList<>();
 
 	public Empregador(String nome, String empresa, String cnpj, String email, String senha) {
 		this.setNome(nome);
@@ -22,6 +19,7 @@ public class Empregador extends Usuario{
 		this.setSenha(senha);
 		this.empresa = empresa;
 		this.cnpj = cnpj;
+		this.setAtivo(true);
 		this.setTipo("ER ");
 	}
 
@@ -44,9 +42,11 @@ public class Empregador extends Usuario{
 		this.cnpj = cnpj;
 	}
 
-	public List<Empregado> getEmpregados() {return empregados;}
+	public List<Contrato> getContratos() {
+		return contratos;
+	}
 
-	public void setEmpregados(List<Empregado> empregados) {this.empregados = empregados;}
-
-    public Empregador getEmpregador() {return getEmpregador();}
+	public void setContratos(List<Contrato> contratos) {
+		this.contratos = contratos;
+	}
 }
