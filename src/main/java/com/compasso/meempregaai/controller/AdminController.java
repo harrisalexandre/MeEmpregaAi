@@ -19,9 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -39,8 +37,8 @@ public class AdminController {
         Admin admin = adminForm.converter(adminForm, adminRepository);
         Optional<Perfil> optionalPerfil= Optional.ofNullable(perfilRepository.findById(2l));
         if (optionalPerfil.isPresent()){
-            List<Perfil> admins = new ArrayList<>();
-            admin.setPerfis(admins);
+            Set<Perfil> perfis = new HashSet<>();
+            admin.setPerfis(perfis);
             adminRepository.save(admin);
             URI uri = uriBuilder.path("/admin/{id}").buildAndExpand(admin.getId()).toUri();
 

@@ -11,7 +11,6 @@ public class EmpregadorDto {
     private String nome;
     private String empresa;
     private String cnpj;
-    private List<EmpregadoDto> empregados;
     private boolean ativo;
 
     public EmpregadorDto(Empregador empregador) {
@@ -19,7 +18,6 @@ public class EmpregadorDto {
         this.nome = empregador.getNome();
         this.empresa = empregador.getEmpresa();
         this.cnpj = empregador.getCnpj();
-        this.empregados = EmpregadoDto.converter(empregador.getEmpregados());
         this.ativo = empregador.isAtivo();
     }
 
@@ -42,8 +40,6 @@ public class EmpregadorDto {
     public String getCnpj() {
         return cnpj;
     }
-
-    public List<EmpregadoDto> getEmpregados() {return empregados;}
 
     public boolean isAtivo() {return ativo;}
 }
