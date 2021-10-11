@@ -1,28 +1,33 @@
 package com.compasso.meempregaai.config.security;
 
-import com.compasso.meempregaai.modelo.Usuario;
-import com.compasso.meempregaai.repository.EmpregadoRepository;
-import com.compasso.meempregaai.repository.EmpregadorRepository;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.compasso.meempregaai.modelo.Usuario;
+import com.compasso.meempregaai.repository.AdminRepository;
+import com.compasso.meempregaai.repository.EmpregadoRepository;
+import com.compasso.meempregaai.repository.EmpregadorRepository;
 
 public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
 
     private TokenConfigurations tokenConfigurations;
     private EmpregadoRepository empregadoRepository;
     private EmpregadorRepository empregadorRepository;
+    private AdminRepository adminRepository;
 
-    public AutenticacaoViaTokenFilter(TokenConfigurations tokenConfigurations, EmpregadoRepository empregadoRepository, EmpregadorRepository empregadorRepository) {
+    public AutenticacaoViaTokenFilter(TokenConfigurations tokenConfigurations, EmpregadoRepository empregadoRepository, EmpregadorRepository empregadorRepository, AdminRepository adminRepository) {
         this.tokenConfigurations = tokenConfigurations;
         this.empregadoRepository = empregadoRepository;
         this.empregadorRepository = empregadorRepository;
+        this.adminRepository = adminRepository;
     }
 
     @Override
@@ -46,6 +51,9 @@ public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
                 break;
             case "ER":
                 usuario = empregadorRepository.findById(Long.parseLong(dados[1]));
+                break;
+            case "ADM":
+                usuario = adminRepository.findById(Long.parseLong(dados[1]));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + dados[0]);

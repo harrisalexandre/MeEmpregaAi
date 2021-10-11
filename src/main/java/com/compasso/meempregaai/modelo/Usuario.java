@@ -1,12 +1,18 @@
 package com.compasso.meempregaai.modelo;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.MappedSuperclass;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @MappedSuperclass
 public class Usuario implements UserDetails {
@@ -17,9 +23,10 @@ public class Usuario implements UserDetails {
     private String email;
     private String senha;
     private String tipo;
+    private boolean ativo;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Perfil> perfis = new ArrayList<>();
+    private Set<Perfil> perfis = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -49,15 +56,21 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
-    public List<Perfil> getPerfis() {return perfis;}
+    public Set<Perfil> getPerfis() {
+        return perfis;
+    }
 
-    public void setPerfis(List<Perfil> perfis) {
+    public void setPerfis(Set<Perfil> perfis) {
         this.perfis = perfis;
     }
 
     public String getTipo() {return tipo;}
 
     public void setTipo(String tipo) {this.tipo = tipo;}
+
+    public boolean isAtivo() {return ativo;}
+
+    public void setAtivo(boolean ativo) {this.ativo = ativo;}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {return perfis;}

@@ -1,5 +1,10 @@
 package com.compasso.meempregaai.config.security;
 
+
+import com.compasso.meempregaai.repository.AdminRepository;
+import com.compasso.meempregaai.repository.EmpregadoRepository;
+import com.compasso.meempregaai.repository.EmpregadorRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +39,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     @Autowired
     private EmpregadorRepository empregadorRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
@@ -66,10 +74,19 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/vaga").hasRole("EMPREGADOR")
                 .antMatchers(HttpMethod.DELETE, "/vaga/*").hasRole("EMPREGADOR")
 
+                .antMatchers(HttpMethod.POST, "/empregado/*/curtir").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/vaga/*candidatar/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/vaga/*/curtir").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/curriculo").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/curriculo/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/empregador/*/contratar/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/vaga").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/vaga/*").hasRole("ADMIN")
+
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenConfigurations, empregadoRepository, empregadorRepository), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenConfigurations, empregadoRepository, empregadorRepository,adminRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
