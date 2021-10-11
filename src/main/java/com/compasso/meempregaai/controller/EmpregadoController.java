@@ -1,34 +1,10 @@
 package com.compasso.meempregaai.controller;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
+import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
+import com.compasso.meempregaai.controller.form.AtualizarEmpregado;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
 import com.compasso.meempregaai.controller.form.EmpregadoForm;
 import com.compasso.meempregaai.modelo.Curriculo;
@@ -38,11 +14,26 @@ import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.CurriculoRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.*;
 
 @RestController
 @RequestMapping("/empregado")
 public class EmpregadoController {
-	
+
     @Autowired
     private EmpregadoRepository empregadoRepository;
 
@@ -61,9 +52,9 @@ public class EmpregadoController {
         Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(1l));
 
         if(optionalPerfil.isPresent()){
-            Set<Perfil> perfils = new HashSet<>();
-            perfils.add(optionalPerfil.get());
-            empregado.setPerfis(perfils);
+            Set<Perfil> perfis = new HashSet<>();
+            perfis.add(optionalPerfil.get());
+            empregado.setPerfis(perfis);
             Curriculo curriculo = new Curriculo(empregado);
             curriculoRepository.save(curriculo);
             empregado.setCurriculo(curriculo);
@@ -101,60 +92,64 @@ public class EmpregadoController {
         }
         return ResponseEntity.notFound().build();
     }
-    
+
     @GetMapping
     @Cacheable(value = "listarUmEmpregado")
     public ResponseEntity<?> listaEmpregado (BuscaEmpregadoForm form, Pageable pageable){
-    	
+
         List<Empregado> empregados = empregadoRepository.findAll(form.toSpec(), pageable).getContent();
         if(empregados.size()> 0) {
             return ResponseEntity.ok(EmpregadoDto.converter(empregados));
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping("/{id}/curriculo")
-    public ResponseEntity<?> detalhaCurriculo (@PathVariable Long id){
 
-        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
-
-        if(optionalEmpregado.isPresent()) {
-            Curriculo curriculo = optionalEmpregado.get().getCurriculo();
-            return ResponseEntity.ok(new CurriculoDto(curriculo));
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{id}/curriculo")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> atualizaCurriculo (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AtualizaCurriculoForm form){
+    public ResponseEntity<?> inativarEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
 
         if(optionalEmpregado.isPresent()) {
             Empregado empregado = optionalEmpregado.get();
             if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
-                Curriculo curriculo = form.atualizar(empregado.getCurriculo().getId(), curriculoRepository);
-                return ResponseEntity.ok(new CurriculoDto(curriculo));
+                empregado.setAtivo(false);
+                return ResponseEntity.ok(new EmpregadoDto(empregado));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> reativarEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                empregado.setAtivo(true);
+                return ResponseEntity.ok(new EmpregadoDto(empregado));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> atualizaEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AtualizarEmpregado form){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                empregado = form.atualizar(id, empregadoRepository);
+                return ResponseEntity.ok(new EmpregadoDto(empregado));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
-
-    @DeleteMapping("/{id}/curriculo")
-    @Transactional
-    public ResponseEntity<?> resetarCurriculo (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
-
-        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
-
-        if(optionalEmpregado.isPresent()) {
-            Empregado empregado = optionalEmpregado.get();
-            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
-                Curriculo curriculo = new AtualizaCurriculoForm().resetar(empregado.getCurriculo().getId(), curriculoRepository);
-                return ResponseEntity.ok(new CurriculoDto(curriculo));}
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
 }

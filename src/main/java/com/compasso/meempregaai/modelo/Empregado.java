@@ -14,8 +14,10 @@ public class Empregado extends Usuario{
 	private long curtidas;
 	@ManyToMany(mappedBy = "empregados")
 	private List<Vaga> vagas = new ArrayList<>();
-	@ManyToMany(mappedBy = "empregados")
-	private List<Empregador> empregadores = new ArrayList<>();
+
+	@OneToMany(mappedBy = "empregado")
+	private List<Contrato> contratos = new ArrayList<>();
+
 	@OneToOne
 	private Curriculo curriculo;
 
@@ -26,13 +28,12 @@ public class Empregado extends Usuario{
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
 		this.curtidas = 0;
+		this.setAtivo(true);
 		this.setTipo("EO ");
 	}
 
 	public Empregado() {
 	}
-
-	//GETTERS AND SETTERS
 
 	public String getCpf() {
 		return cpf;
@@ -50,11 +51,35 @@ public class Empregado extends Usuario{
 		this.dataNascimento = dataNascimento;
 	}
 
-	public long getCurtidas() {return curtidas;}
+	public long getCurtidas() {
+		return curtidas;
+	}
 
-	public void setCurtidas(long curtidas) {this.curtidas = curtidas;}
+	public void setCurtidas(long curtidas) {
+		this.curtidas = curtidas;
+	}
 
-	public Curriculo getCurriculo() {return curriculo;}
+	public List<Vaga> getVagas() {
+		return vagas;
+	}
 
-	public void setCurriculo(Curriculo curriculo) {this.curriculo = curriculo;}
+	public void setVagas(List<Vaga> vagas) {
+		this.vagas = vagas;
+	}
+
+	public List<Contrato> getContratos() {
+		return contratos;
+	}
+
+	public void setContratos(List<Contrato> contratos) {
+		this.contratos = contratos;
+	}
+
+	public Curriculo getCurriculo() {
+		return curriculo;
+	}
+
+	public void setCurriculo(Curriculo curriculo) {
+		this.curriculo = curriculo;
+	}
 }

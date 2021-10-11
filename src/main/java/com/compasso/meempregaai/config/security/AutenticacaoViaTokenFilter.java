@@ -1,20 +1,18 @@
 package com.compasso.meempregaai.config.security;
 
-import java.io.IOException;
+import com.compasso.meempregaai.modelo.Usuario;
+import com.compasso.meempregaai.repository.AdminRepository;
+import com.compasso.meempregaai.repository.EmpregadoRepository;
+import com.compasso.meempregaai.repository.EmpregadorRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.compasso.meempregaai.modelo.Usuario;
-import com.compasso.meempregaai.repository.AdminRepository;
-import com.compasso.meempregaai.repository.EmpregadoRepository;
-import com.compasso.meempregaai.repository.EmpregadorRepository;
+import java.io.IOException;
 
 public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
 

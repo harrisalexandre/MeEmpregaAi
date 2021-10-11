@@ -1,33 +1,25 @@
 package com.compasso.meempregaai.controller;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.compasso.meempregaai.controller.dto.AdminDto;
+import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.form.AdminForm;
 import com.compasso.meempregaai.modelo.Admin;
+import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Perfil;
 import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.AdminRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin")

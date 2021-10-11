@@ -1,14 +1,13 @@
 package com.compasso.meempregaai.controller.form;
 
-import java.util.Optional;
+import com.compasso.meempregaai.modelo.Curriculo;
+import com.compasso.meempregaai.modelo.Empregador;
+import com.compasso.meempregaai.repository.EmpregadorRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.compasso.meempregaai.modelo.Empregador;
-import com.compasso.meempregaai.repository.EmpregadorRepository;
+import java.util.Optional;
 
 public class EmpregadorForm {
 
@@ -36,7 +35,7 @@ public class EmpregadorForm {
         }
         throw new IllegalArgumentException("Dados invalidos");
     }
-    
+
     public Empregador converter(EmpregadorForm empregadorForm) {
         return new Empregador(nome, empresa, cnpj, email, new BCryptPasswordEncoder().encode(senha));
     }
@@ -56,4 +55,6 @@ public class EmpregadorForm {
     public void setEmail(String email) {this.email = email;}
 
     public void setSenha(String senha) {this.senha = senha;}
+
+
 }

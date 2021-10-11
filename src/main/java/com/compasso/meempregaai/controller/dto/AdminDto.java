@@ -1,8 +1,7 @@
 package com.compasso.meempregaai.controller.dto;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.compasso.meempregaai.modelo.Admin;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AdminDto {
 

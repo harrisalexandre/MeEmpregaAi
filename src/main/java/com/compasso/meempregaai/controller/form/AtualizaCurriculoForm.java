@@ -2,9 +2,6 @@ package com.compasso.meempregaai.controller.form;
 
 import com.compasso.meempregaai.modelo.Curriculo;
 import com.compasso.meempregaai.repository.CurriculoRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 
 public class AtualizaCurriculoForm {
