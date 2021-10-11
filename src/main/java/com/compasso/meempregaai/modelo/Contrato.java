@@ -17,12 +17,12 @@ public class Contrato {
     @ManyToOne
     private Empregado empregado;
 
-    public Contrato(Empregado empregado, Empregador empregador) {
+    public Contrato(Empregado empregado, Empregador empregador, LocalDate dataFinal) {
         this.empregador = empregador;
         this.empregado = empregado;
         this.ativo = true;
         this.dataInicio = LocalDate.now();
-        this.dataFinal = null;
+        this.dataFinal = dataFinal;
     }
 
     public Contrato() {

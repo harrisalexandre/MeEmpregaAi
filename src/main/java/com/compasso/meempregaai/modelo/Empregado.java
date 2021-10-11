@@ -11,7 +11,8 @@ public class Empregado extends Usuario{
 
 	private String cpf;
 	private LocalDate dataNascimento;
-	private long curtidas;
+	@OneToMany
+	private List<Empregador> curtidas = new ArrayList<>();
 	@ManyToMany(mappedBy = "empregados")
 	private List<Vaga> vagas = new ArrayList<>();
 
@@ -27,7 +28,6 @@ public class Empregado extends Usuario{
 		this.setSenha(senha);
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
-		this.curtidas = 0;
 		this.setAtivo(true);
 		this.setTipo("EO ");
 	}
@@ -51,11 +51,11 @@ public class Empregado extends Usuario{
 		this.dataNascimento = dataNascimento;
 	}
 
-	public long getCurtidas() {
+	public List<Empregador> getCurtidas() {
 		return curtidas;
 	}
 
-	public void setCurtidas(long curtidas) {
+	public void setCurtidas(List<Empregador> curtidas) {
 		this.curtidas = curtidas;
 	}
 

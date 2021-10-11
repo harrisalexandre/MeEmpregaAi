@@ -22,7 +22,7 @@ public class VagaDto {
         this.nomeEmpregador = vaga.getEmpregador().getNome();
         this.descricao = vaga.getDescricao();
         this.empregados = EmpregadoDto.converter(vaga.getEmpregados());
-        this.curtidas = vaga.getCurtidas();
+        this.curtidas = vaga.getCurtidas().size();
         this.ativa = vaga.isAtiva();
     }
 

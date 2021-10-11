@@ -41,30 +41,37 @@ public class VagaController {
 
     @PostMapping
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
-    public ResponseEntity<VagaDto> cadastrarVaga(@RequestBody @Valid VagaForm vagaForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<VagaDto> cadastrarVaga(@RequestBody @Valid VagaForm vagaForm,@AuthenticationPrincipal Usuario logado, UriComponentsBuilder uriBuilder) {
 
-        Vaga vaga = vagaForm.converter(vagaForm, empregadorRepository);
-        vagaRepository.save(vaga);
 
-        URI uri = uriBuilder.path("/vaga/{id}").buildAndExpand(vaga.getId()).toUri();
+        if(logado.getId() == vagaForm.getEmpregadorId()){
+            Vaga vaga = vagaForm.converter(vagaForm, empregadorRepository);
+            vagaRepository.save(vaga);
 
-        return ResponseEntity.created(uri).body(new VagaDto(vaga));
+            URI uri = uriBuilder.path("/vaga/{id}").buildAndExpand(vaga.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new VagaDto(vaga));
+        }
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PostMapping("/{idEmpregado}/candidatar/{idVaga}")
     @Transactional
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
-    public ResponseEntity<VagaDto> condidatarVaga(@PathVariable Long idEmpregado, @PathVariable Long idVaga) {
+    public ResponseEntity<VagaDto> candidatarVaga(@PathVariable Long idEmpregado, @PathVariable Long idVaga) {
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(idVaga));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));
 
         if(optionalVaga.isPresent() && optionalEmpregado.isPresent()){
             Vaga vaga = optionalVaga.get();
-            Empregado empregado = optionalEmpregado.get();
-            vaga.getEmpregados().add(empregado);
-            vagaRepository.save(vaga);
-
-            return ResponseEntity.ok(new VagaDto(vaga));
+            if(vaga.isAtiva()){
+                Empregado empregado = optionalEmpregado.get();
+                vaga.getEmpregados().add(empregado);
+                vagaRepository.save(vaga);
+                return ResponseEntity.ok(new VagaDto(vaga));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -72,13 +79,19 @@ public class VagaController {
     @PostMapping("/{id}/curtir")
     @Transactional
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
-    public ResponseEntity<VagaDto> curtirVaga (@PathVariable Long id) {
+    public ResponseEntity<VagaDto> curtirVaga (@PathVariable Long id, @AuthenticationPrincipal Usuario logado) {
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
 
         if(optionalVaga.isPresent()){
-            Vaga vaga = optionalVaga.get();
-            vaga.setCurtidas(vaga.getCurtidas()+ 1);
-            vagaRepository.save(vaga);
+            Empregado empregado = empregadoRepository.findById(logado.getId());
+            Vaga vaga = optionalVaga.get();;
+            List<Empregado> curtidas = vaga.getCurtidas();
+            if(curtidas.contains(empregado)){
+                 curtidas.remove(empregado);
+            }else{
+                curtidas.add(empregado);
+            }
+            vaga.setCurtidas(curtidas);
             return ResponseEntity.ok(new VagaDto(vaga));
         }
         return ResponseEntity.notFound().build();
@@ -98,13 +111,11 @@ public class VagaController {
 
     @GetMapping
     @Cacheable(value = "buscarListaVaga")
-    public ResponseEntity<?> listaVaga (BuscaVagaForm form, Pageable pageable){
+    public ResponseEntity<?> listaVaga (@Valid BuscaVagaForm form, Pageable pageable){
 
         List<Vaga> vagas = vagaRepository.findAll(form.toSpec(), pageable).getContent();
-        if(vagas.size()> 0) {
-            return ResponseEntity.ok(VagaDto.converter(vagas));
-        }
-        return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(VagaDto.converter(vagas));
     }
 
     @DeleteMapping("/{id}")

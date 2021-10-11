@@ -34,6 +34,9 @@ public class VagaForm {
         this.empregadorId = empregadorId;
     }
 
+    public Long getEmpregadorId() {
+        return empregadorId;
+    }
 }
 
 
