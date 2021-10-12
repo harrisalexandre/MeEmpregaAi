@@ -17,6 +17,7 @@ public class AtualizarEmpregado {
     @NotBlank
     private String senha;
 
+
     public Empregado atualizar(Long id, EmpregadoRepository empregadoRepository){
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
 

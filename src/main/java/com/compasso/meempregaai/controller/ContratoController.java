@@ -4,15 +4,13 @@ import com.compasso.meempregaai.controller.dto.ContratoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.AtualizarEmpregado;
 import com.compasso.meempregaai.controller.form.ContratoForm;
-import com.compasso.meempregaai.modelo.Contrato;
-import com.compasso.meempregaai.modelo.Empregado;
-import com.compasso.meempregaai.modelo.Empregador;
-import com.compasso.meempregaai.modelo.Usuario;
+import com.compasso.meempregaai.modelo.*;
 import com.compasso.meempregaai.repository.ContratoRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -71,7 +69,8 @@ public class ContratoController {
 
     @DeleteMapping("empregador/contrato/{id}")
     @Transactional
-    public ResponseEntity<?> inativarEmpregadoEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
+    public ResponseEntity<?> inativarContrato (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Contrato> optionalEmpregadoEmpregador = Optional.ofNullable(contratoRepository.findById(id));
 
@@ -79,7 +78,7 @@ public class ContratoController {
             Contrato contrato = optionalEmpregadoEmpregador.get();
             Empregador empregador = contrato.getEmpregador();
 
-            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(Empregador.class.getSimpleName())){
                 contrato.setAtivo(false);
                 contrato.setDataFinal(LocalDate.now());
                 return ResponseEntity.ok(new ContratoDto(contrato));}

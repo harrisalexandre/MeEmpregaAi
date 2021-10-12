@@ -21,7 +21,7 @@ public class Vaga {
 
     @ManyToMany
     @JoinTable(name = "vaga_empregado", joinColumns = @JoinColumn(name = "vaga_id"), inverseJoinColumns = @JoinColumn(name = "empregado_id"))
-    private List<Empregado> empregados = new ArrayList<>();
+    private List<Empregado> candidatos = new ArrayList<>();
 
     public Vaga(String nome, String descricao, Empregador empregador) {
         this.nome = nome;
@@ -65,12 +65,12 @@ public class Vaga {
         this.descricao = descricao;
     }
 
-    public List<Empregado> getEmpregados() {
-        return empregados;
+    public List<Empregado> getCandidatos() {
+        return candidatos;
     }
 
-    public void setEmpregados(List<Empregado> empregados) {
-        this.empregados = empregados;
+    public void setCandidatos(List<Empregado> candidatos) {
+        this.candidatos = candidatos;
     }
 
     public Boolean getAtiva() {

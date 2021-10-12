@@ -20,8 +20,9 @@ public class EmpregadoDto {
         this.nome = empregado.getNome();
         this.cpf = empregado.getCpf();
         this.dataNascimento = empregado.getDataNascimento();
-        this.curtidas = empregado.getCurtidas();
+        this.curtidas = empregado.getCurtidas().size();
         this.ativo = empregado.isAtivo();
+        System.out.println(getClass().getSimpleName());
     }
 
     public static List<EmpregadoDto> converter(List<Empregado> empregados) {

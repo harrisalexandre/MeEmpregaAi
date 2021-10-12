@@ -3,6 +3,7 @@ import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
+import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
 import com.compasso.meempregaai.controller.form.EmpregadorForm;
 import com.compasso.meempregaai.modelo.*;
@@ -67,7 +68,7 @@ public class EmpregadorController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "listaEmpregadosDoEmpregadorPorId")
+    @Cacheable(value = "listaEmpregador")
     public ResponseEntity<?> detalhaEmpregador (@PathVariable Long id){
 
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
@@ -79,7 +80,7 @@ public class EmpregadorController {
         }
         return ResponseEntity.notFound().build();
     }
-    @PutMapping("/{id}/empregador")
+    @PutMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<?> atualizarEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid EmpregadorForm form){
@@ -99,13 +100,14 @@ public class EmpregadorController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<?> inativarEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
 
         if(optionalEmpregador.isPresent()) {
             Empregador empregador = optionalEmpregador.get();
-            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
                 List<Vaga> vagas = vagaRepository.findByEmpregador(empregador);
                 for(Vaga vaga : vagas){
                     vaga.setAtiva(false);
@@ -120,13 +122,14 @@ public class EmpregadorController {
 
     @PostMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<?> reativarEmpregador (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
 
         if(optionalEmpregador.isPresent()) {
             Empregador empregador = optionalEmpregador.get();
-            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
                 empregador.setAtivo(true);
                 return ResponseEntity.ok(new EmpregadorDto(empregador));}
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

@@ -30,7 +30,7 @@ public class EmpregadorForm {
             empregador.setEmpresa(empresa);
             empregador.setCnpj(cnpj);
             empregador.setEmail(email);
-            empregador.setSenha(senha);
+            empregador.setSenha(new BCryptPasswordEncoder().encode(senha));
             return empregador;
         }
         throw new IllegalArgumentException("Dados invalidos");
