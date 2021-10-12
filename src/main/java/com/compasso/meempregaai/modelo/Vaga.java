@@ -15,8 +15,10 @@ public class Vaga {
     @ManyToOne
     private Empregador empregador;
     private String descricao;
-    private boolean ativa;
-    private long curtidas;
+    private Boolean ativa;
+    @OneToMany
+    private List<Empregado> curtidas = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(name = "vaga_empregado", joinColumns = @JoinColumn(name = "vaga_id"), inverseJoinColumns = @JoinColumn(name = "empregado_id"))
     private List<Empregado> empregados = new ArrayList<>();
@@ -25,7 +27,6 @@ public class Vaga {
         this.nome = nome;
         this.empregador = empregador;
         this.descricao = descricao;
-        this.curtidas = 0;
         this.ativa = true;
     }
 
@@ -72,11 +73,19 @@ public class Vaga {
         this.empregados = empregados;
     }
 
-    public long getCurtidas() {return curtidas;}
+    public Boolean getAtiva() {
+        return ativa;
+    }
 
-    public void setCurtidas(long curtidas) {this.curtidas = curtidas;}
+    public List<Empregado> getCurtidas() {
+        return curtidas;
+    }
 
-    public boolean isAtiva() {return ativa;}
+    public void setCurtidas(List<Empregado> curtidas) {
+        this.curtidas = curtidas;
+    }
 
-    public void setAtiva(boolean ativa) {this.ativa = ativa;}
+    public Boolean isAtiva() {return ativa;}
+
+    public void setAtiva(Boolean ativa) {this.ativa = ativa;}
 }

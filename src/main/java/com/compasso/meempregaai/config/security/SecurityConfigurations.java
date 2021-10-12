@@ -67,16 +67,10 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/empregador/*/contratar/*").hasRole("EMPREGADOR")
                 .antMatchers(HttpMethod.POST, "/vaga").hasRole("EMPREGADOR")
                 .antMatchers(HttpMethod.DELETE, "/vaga/*").hasRole("EMPREGADOR")
+                .antMatchers(HttpMethod.DELETE, "/vaga/*/empregador").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/empregador/*").hasRole("EMPREGADOR")
                 .antMatchers(HttpMethod.POST, "/empregador/*").hasRole("EMPREGADOR")
-
-                .antMatchers(HttpMethod.POST, "/empregado/*/curtir").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/vaga/*candidatar/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/vaga/*/curtir").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/empregador/*/contratar/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/vaga").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/vaga/*").hasRole("ADMIN")
-
+                
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

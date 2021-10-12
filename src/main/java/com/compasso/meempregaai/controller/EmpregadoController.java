@@ -1,18 +1,13 @@
 package com.compasso.meempregaai.controller;
 
-import com.compasso.meempregaai.controller.dto.CurriculoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadoDto;
-import com.compasso.meempregaai.controller.dto.EmpregadorDto;
-import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
 import com.compasso.meempregaai.controller.form.AtualizarEmpregado;
 import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
 import com.compasso.meempregaai.controller.form.EmpregadoForm;
-import com.compasso.meempregaai.modelo.Curriculo;
-import com.compasso.meempregaai.modelo.Empregado;
-import com.compasso.meempregaai.modelo.Perfil;
-import com.compasso.meempregaai.modelo.Usuario;
+import com.compasso.meempregaai.modelo.*;
 import com.compasso.meempregaai.repository.CurriculoRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
+import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -43,6 +38,9 @@ public class EmpregadoController {
     @Autowired
     private CurriculoRepository curriculoRepository;
 
+    @Autowired
+    private EmpregadorRepository empregadorRepository;
+
     @PostMapping
     @Transactional
     @CacheEvict(value = "listarUmEmpregado",allEntries = true)
@@ -69,13 +67,19 @@ public class EmpregadoController {
     @PostMapping("/{id}/curtir")
     @Transactional
     @CacheEvict(value = "listarUmEmpregado",allEntries = true)
-    public ResponseEntity<EmpregadoDto> curtirEmpregado (@PathVariable Long id) {
+    public ResponseEntity<EmpregadoDto> curtirEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado) {
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
-
         if(optionalEmpregado.isPresent()){
+            Empregador empregador = empregadorRepository.findById(logado.getId());
             Empregado empregado = optionalEmpregado.get();
-            empregado.setCurtidas(empregado.getCurtidas()+ 1);
-            empregadoRepository.save(empregado);
+
+            List<Empregador> curtidas = empregado.getCurtidas();
+            if(curtidas.contains(empregador)){
+                curtidas.remove(empregador);
+            }else{
+                curtidas.add(empregador);
+            }
+            empregado.setCurtidas(curtidas);
             return ResponseEntity.ok(new EmpregadoDto(empregado));
         }
         return ResponseEntity.notFound().build();
@@ -97,11 +101,9 @@ public class EmpregadoController {
     @Cacheable(value = "listarUmEmpregado")
     public ResponseEntity<?> listaEmpregado (BuscaEmpregadoForm form, Pageable pageable){
 
-        List<Empregado> empregados = empregadoRepository.findAll(form.toSpec(), pageable).getContent();
-        if(empregados.size()> 0) {
-            return ResponseEntity.ok(EmpregadoDto.converter(empregados));
-        }
-        return ResponseEntity.notFound().build();
+        List<Empregado> empregados = empregadoRepository.findAllByAtivoIsTrue(pageable);
+
+        return ResponseEntity.ok(EmpregadoDto.converter(empregados));
     }
 
     @DeleteMapping("/{id}")

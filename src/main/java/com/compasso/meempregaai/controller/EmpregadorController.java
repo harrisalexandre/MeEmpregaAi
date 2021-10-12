@@ -9,6 +9,7 @@ import com.compasso.meempregaai.modelo.*;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
+import com.compasso.meempregaai.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,6 +37,9 @@ public class EmpregadorController {
     @Autowired
     private PerfilRepository perfilRepository;
 
+    @Autowired
+    private VagaRepository vagaRepository;
+
     @PostMapping
     @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<EmpregadorDto> cadastrarEmpregador(@RequestBody @Valid EmpregadorForm empregadorForm, UriComponentsBuilder uriBuilder) {
@@ -57,13 +61,9 @@ public class EmpregadorController {
 
     @GetMapping
     @Cacheable(value = "listaEmpregador")
-    public ResponseEntity<?> listaEmpregador (BuscaEmpregadorForm form, Pageable pageable){
-
-        List<Empregador> empregadores = empregadorRepository.findAll(form.toSpec(), pageable).getContent();
-        if(empregadores.size()> 0) {
-            return ResponseEntity.ok(EmpregadorDto.converter(empregadores));
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> listaEmpregador (Pageable pageable){
+        List<Empregador> empregadores = empregadorRepository.findAllByAtivoIsTrue(pageable);
+        return ResponseEntity.ok(EmpregadorDto.converter(empregadores));
     }
 
     @GetMapping("/{id}")
@@ -106,6 +106,11 @@ public class EmpregadorController {
         if(optionalEmpregador.isPresent()) {
             Empregador empregador = optionalEmpregador.get();
             if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                List<Vaga> vagas = vagaRepository.findByEmpregador(empregador);
+                for(Vaga vaga : vagas){
+                    vaga.setAtiva(false);
+                }
+
                 empregador.setAtivo(false);
                 return ResponseEntity.ok(new EmpregadorDto(empregador));}
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

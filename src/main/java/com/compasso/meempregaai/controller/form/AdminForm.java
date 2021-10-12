@@ -2,8 +2,7 @@ package com.compasso.meempregaai.controller.form;
 
 import com.compasso.meempregaai.modelo.Admin;
 import com.compasso.meempregaai.repository.AdminRepository;
-import com.compasso.meempregaai.repository.EmpregadorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
