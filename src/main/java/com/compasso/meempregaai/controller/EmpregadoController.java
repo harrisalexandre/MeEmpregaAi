@@ -86,7 +86,7 @@ public class EmpregadoController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "buscarUmEmpregado")
+    @Cacheable(value = "listarUmEmpregado")
     public ResponseEntity<?> detalhaEmpregado (@PathVariable Long id){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
@@ -108,6 +108,7 @@ public class EmpregadoController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listarUmEmpregado",allEntries = true)
     public ResponseEntity<?> inativarEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
@@ -124,6 +125,7 @@ public class EmpregadoController {
 
     @PostMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listarUmEmpregado",allEntries = true)
     public ResponseEntity<?> reativarEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
@@ -140,13 +142,14 @@ public class EmpregadoController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listarUmEmpregado",allEntries = true)
     public ResponseEntity<?> atualizaEmpregado (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AtualizarEmpregado form){
 
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
 
         if(optionalEmpregado.isPresent()) {
             Empregado empregado = optionalEmpregado.get();
-            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
                 empregado = form.atualizar(id, empregadoRepository);
                 return ResponseEntity.ok(new EmpregadoDto(empregado));
             }

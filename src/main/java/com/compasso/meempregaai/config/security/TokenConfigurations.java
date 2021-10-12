@@ -27,7 +27,7 @@ public class TokenConfigurations {
 
         return Jwts.builder()
                 .setIssuer("API Me Emprega Ai")
-                .setSubject(tipo+logado.getId().toString())
+                .setSubject(tipo+" "+logado.getId().toString())
                 .setIssuedAt(hoje)
                 .setExpiration(dataExpiracao)
                 .signWith(SignatureAlgorithm.HS256, secret)

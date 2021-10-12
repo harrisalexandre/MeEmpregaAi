@@ -1,5 +1,8 @@
 package com.compasso.meempregaai.config.security;
 
+import com.compasso.meempregaai.modelo.Admin;
+import com.compasso.meempregaai.modelo.Empregado;
+import com.compasso.meempregaai.modelo.Empregador;
 import com.compasso.meempregaai.modelo.Usuario;
 import com.compasso.meempregaai.repository.AdminRepository;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
@@ -43,19 +46,16 @@ public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
         String[] dados = tokenConfigurations.getUsuarioIdTipo(token);
         Usuario usuario;
 
-        switch (dados[0]){
-            case "EO":
-                usuario = empregadoRepository.findById(Long.parseLong(dados[1]));
-                break;
-            case "ER":
-                usuario = empregadorRepository.findById(Long.parseLong(dados[1]));
-                break;
-            case "ADM":
-                usuario = adminRepository.findById(Long.parseLong(dados[1]));
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + dados[0]);
+        if(dados[0].equals(Empregado.class.getSimpleName())){
+            usuario = empregadoRepository.findById(Long.parseLong(dados[1]));
+        }else if(dados[0].equals(Empregador.class.getSimpleName())){
+            usuario = empregadorRepository.findById(Long.parseLong(dados[1]));
+        }else if(dados[0].equals(Admin.class.getSimpleName())){
+            usuario = adminRepository.findById(Long.parseLong(dados[1]));
+        }else{
+            throw new IllegalStateException("Unexpected value: " + dados[0]);
         }
+
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getPerfis());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

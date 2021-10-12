@@ -13,7 +13,7 @@ public class Empregado extends Usuario{
 	private LocalDate dataNascimento;
 	@OneToMany
 	private List<Empregador> curtidas = new ArrayList<>();
-	@ManyToMany(mappedBy = "empregados")
+	@ManyToMany(mappedBy = "candidatos")
 	private List<Vaga> vagas = new ArrayList<>();
 
 	@OneToMany(mappedBy = "empregado")
@@ -29,7 +29,7 @@ public class Empregado extends Usuario{
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
 		this.setAtivo(true);
-		this.setTipo("EO ");
+		this.setTipo(getClass().getSimpleName());
 	}
 
 	public Empregado() {

@@ -1,7 +1,6 @@
 package com.compasso.meempregaai.controller.form;
 
 
-import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Empregador;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class BuscaEmpregadorForm {
     private Boolean ativo;
 
-    public Specification<Empregado> toSpec() {
+    public Specification<Empregador> toSpec() {
         return (root, query, builder) -> {
             List<Predicate> predicados = new ArrayList<>();
 
@@ -25,5 +24,10 @@ public class BuscaEmpregadorForm {
 
             return builder.and(predicados.toArray(new Predicate[0]));
         };
+    }
+
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

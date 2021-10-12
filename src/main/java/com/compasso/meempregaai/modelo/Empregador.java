@@ -20,7 +20,7 @@ public class Empregador extends Usuario{
 		this.empresa = empresa;
 		this.cnpj = cnpj;
 		this.setAtivo(true);
-		this.setTipo("ER ");
+		this.setTipo(getClass().getSimpleName());
 	}
 
 	public Empregador() {

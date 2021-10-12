@@ -18,7 +18,6 @@ public class VagaForm {
 
     public Vaga converter(VagaForm vagaForm, EmpregadorRepository empregadorRepository) {
         Empregador empregador = empregadorRepository.findById(empregadorId);
-
         return new Vaga(nome, descricao, empregador);
     }
 

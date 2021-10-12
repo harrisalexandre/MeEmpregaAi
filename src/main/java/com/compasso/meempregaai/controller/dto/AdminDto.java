@@ -1,30 +1,28 @@
 package com.compasso.meempregaai.controller.dto;
 
 import com.compasso.meempregaai.modelo.Admin;
+import com.compasso.meempregaai.modelo.Contrato;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminDto {
 
     private Long id;
     private String nome;
     private String email;
-    private String senha;
 
-    @Autowired
-    public Admin admin;
 
     public AdminDto(Admin admin) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-
+        this.id = admin.getId();
+        this.nome = admin.getNome();
+        this.email = admin.getEmail();
     }
 
-    public static Admin getAdmin() {return getAdmin();
+    public static List<AdminDto> converter(List<Admin> admins) {
+        return admins.stream().map(AdminDto::new).collect(Collectors.toList());
     }
-
-
     public Long getId() {
         return id;
     }
@@ -44,16 +42,10 @@ public class AdminDto {
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 
 }

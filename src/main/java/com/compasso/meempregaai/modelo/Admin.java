@@ -9,8 +9,15 @@ import javax.persistence.*;
 public class Admin extends Usuario{
 
     public Admin(String nome, String email, String senha) {
-        super();
+        this.setNome(nome);
+        this.setEmail(email);
+        this.setSenha(senha);
+        this.setTipo(getClass().getSimpleName());
+        this.setAtivo(true);
     }
 
 
+    public Admin() {
+
+    }
 }

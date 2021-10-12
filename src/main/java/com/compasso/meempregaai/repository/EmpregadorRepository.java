@@ -10,6 +10,5 @@ import java.util.List;
 public interface EmpregadorRepository extends PagingAndSortingRepository<Empregador, String>, JpaSpecificationExecutor<Empregador> {
     Empregador findById(Long id);
     Empregador findByEmail(String userName);
-
     List<Empregador> findAllByAtivoIsTrue(Pageable pageable);
 }

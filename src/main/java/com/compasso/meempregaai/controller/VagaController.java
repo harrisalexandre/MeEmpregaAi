@@ -3,10 +3,7 @@ package com.compasso.meempregaai.controller;
 import com.compasso.meempregaai.controller.dto.VagaDto;
 import com.compasso.meempregaai.controller.form.BuscaVagaForm;
 import com.compasso.meempregaai.controller.form.VagaForm;
-import com.compasso.meempregaai.modelo.Empregado;
-import com.compasso.meempregaai.modelo.Empregador;
-import com.compasso.meempregaai.modelo.Usuario;
-import com.compasso.meempregaai.modelo.Vaga;
+import com.compasso.meempregaai.modelo.*;
 import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.VagaRepository;
@@ -43,8 +40,7 @@ public class VagaController {
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<VagaDto> cadastrarVaga(@RequestBody @Valid VagaForm vagaForm,@AuthenticationPrincipal Usuario logado, UriComponentsBuilder uriBuilder) {
 
-
-        if(logado.getId() == vagaForm.getEmpregadorId()){
+        if(logado.getId().equals(vagaForm.getEmpregadorId()) && logado.getTipo().equals(Empregador.class.getSimpleName()) || logado.getTipo().equals(Admin.class.getSimpleName())){
             Vaga vaga = vagaForm.converter(vagaForm, empregadorRepository);
             vagaRepository.save(vaga);
 
@@ -59,16 +55,21 @@ public class VagaController {
     @PostMapping("/{idEmpregado}/candidatar/{idVaga}")
     @Transactional
     @CacheEvict(value = "buscarListaVaga", allEntries = true)
-    public ResponseEntity<VagaDto> candidatarVaga(@PathVariable Long idEmpregado, @PathVariable Long idVaga) {
+    public ResponseEntity<VagaDto> candidatarVaga(@PathVariable Long idEmpregado, @PathVariable Long idVaga, @AuthenticationPrincipal Usuario logado) {
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(idVaga));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));
 
         if(optionalVaga.isPresent() && optionalEmpregado.isPresent()){
             Vaga vaga = optionalVaga.get();
-            if(vaga.isAtiva()){
-                Empregado empregado = optionalEmpregado.get();
-                vaga.getEmpregados().add(empregado);
-                vagaRepository.save(vaga);
+            Empregado empregado = optionalEmpregado.get();
+            if(vaga.isAtiva() && logado.getId().equals(empregado.getId()) && logado.getTipo().equals(Empregado.class.getSimpleName()) || vaga.isAtiva() && logado.getTipo().equals(Admin.class.getSimpleName())){
+               List<Empregado> candidatos = vaga.getCandidatos();
+               if(candidatos.contains(empregado)){
+                   candidatos.remove(empregado);
+               }else{
+                   candidatos.add(empregado);
+               }
+                vaga.setCandidatos(candidatos);
                 return ResponseEntity.ok(new VagaDto(vaga));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -128,9 +129,26 @@ public class VagaController {
         if(optionalVaga.isPresent()) {
             Vaga vaga = optionalVaga.get();
             Empregador empregador = vaga.getEmpregador();
-            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
                 vaga.setAtiva(false);
-                vagaRepository.save(vaga);
+                return ResponseEntity.ok(new VagaDto(optionalVaga.get()));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> reativarVaga (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
+
+        if(optionalVaga.isPresent()) {
+            Vaga vaga = optionalVaga.get();
+            Empregador empregador = vaga.getEmpregador();
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
+                vaga.setAtiva(true);
                 return ResponseEntity.ok(new VagaDto(optionalVaga.get()));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuscaEmpregadoForm {
+
     private Boolean ativo;
 
     public Specification<Empregado> toSpec() {
@@ -23,5 +24,9 @@ public class BuscaEmpregadoForm {
 
             return builder.and(predicados.toArray(new Predicate[0]));
         };
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

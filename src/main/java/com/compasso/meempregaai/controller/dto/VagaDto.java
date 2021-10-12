@@ -12,7 +12,7 @@ public class VagaDto {
     private String nome;
     private String nomeEmpregador;
     private String descricao;
-    private List<EmpregadoDto> empregados;
+    private List<EmpregadoDto> candidatos;
     private boolean ativa;
     private long curtidas;
 
@@ -21,7 +21,7 @@ public class VagaDto {
         this.nome = vaga.getNome();
         this.nomeEmpregador = vaga.getEmpregador().getNome();
         this.descricao = vaga.getDescricao();
-        this.empregados = EmpregadoDto.converter(vaga.getEmpregados());
+        this.candidatos = EmpregadoDto.converter(vaga.getCandidatos());
         this.curtidas = vaga.getCurtidas().size();
         this.ativa = vaga.isAtiva();
     }
@@ -46,7 +46,9 @@ public class VagaDto {
         return descricao;
     }
 
-    public List<EmpregadoDto> getEmpregados() {return empregados;}
+    public List<EmpregadoDto> getCandidatos() {
+        return candidatos;
+    }
 
     public long getCurtidas() {return curtidas;}
 
