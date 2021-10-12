@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @EnableWebSecurity
 @Configuration
@@ -40,9 +41,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
     }
-    @Override
+    @Override    
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+    	http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and().authorizeRequests().and()
+        
+      //  http.authorizeRequests()
+        .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/empregado").permitAll()
