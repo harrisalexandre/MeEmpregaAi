@@ -33,7 +33,7 @@
                         },
                         mounted() {
                             axios
-                                .get('http://localhost:8080/empregado')
+                                .get('https://meempregaai.herokuapp.com/empregado')
                                 .then(response => (this.empregados = response.data))
                         }
                     });
