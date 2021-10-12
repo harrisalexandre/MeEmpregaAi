@@ -7,7 +7,7 @@
 
 <body onload="onLoad()">
     <div class="card mb-3">
-        <div class="card-header alert-dark">Lista Empregados</div>
+        <div class="card-header alert-dark">Lista Empregador</div>
         <div class="card-body">
             <div class="row">
 
@@ -15,12 +15,10 @@
                     <div v-for="empregado in empregados">
                         <div>{{empregado.id}}</div>
                         <div>{{empregado.nome}}</div>
-                        <div>{{empregado.cpf}}</div>
-                        <div>{{empregado.dataNascimento}}</div>
-                        <div>{{empregado.curtidas}}</div>
+                        <div>{{empregado.empresa}}</div>
+                        <div>{{empregado.cnpj}}</div>
+                        <div>{{empregado.empregados}}</div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -33,7 +31,7 @@
                         },
                         mounted() {
                             axios
-                                .get('https://meempregaai.herokuapp.com/empregado')
+                                .get('https://meempregaai.herokuapp.com/empregador')
                                 .then(response => (this.empregados = response.data))
                         }
                     });

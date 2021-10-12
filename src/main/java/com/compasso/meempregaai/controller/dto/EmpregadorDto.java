@@ -12,6 +12,7 @@ public class EmpregadorDto {
     private String empresa;
     private String cnpj;
     private List<EmpregadoDto> empregados;
+    private boolean ativo;
 
     public EmpregadorDto(Empregador empregador) {
         this.id = empregador.getId();
@@ -19,6 +20,7 @@ public class EmpregadorDto {
         this.empresa = empregador.getEmpresa();
         this.cnpj = empregador.getCnpj();
         this.empregados = EmpregadoDto.converter(empregador.getEmpregados());
+        this.ativo = empregador.isAtivo();
     }
 
     public static List<EmpregadorDto> converter(List<Empregador> associados) {
@@ -42,4 +44,6 @@ public class EmpregadorDto {
     }
 
     public List<EmpregadoDto> getEmpregados() {return empregados;}
+
+    public boolean isAtivo() {return ativo;}
 }

@@ -1,5 +1,7 @@
 package com.compasso.meempregaai.modelo;
 
+import com.compasso.meempregaai.controller.dto.AdminDto;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,4 +47,6 @@ public class Empregador extends Usuario{
 	public List<Empregado> getEmpregados() {return empregados;}
 
 	public void setEmpregados(List<Empregado> empregados) {this.empregados = empregados;}
+
+    public Empregador getEmpregador() {return getEmpregador();}
 }

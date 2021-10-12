@@ -17,6 +17,7 @@ public class Usuario implements UserDetails {
     private String email;
     private String senha;
     private String tipo;
+    private boolean ativo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Perfil> perfis = new ArrayList<>();
@@ -58,6 +59,10 @@ public class Usuario implements UserDetails {
     public String getTipo() {return tipo;}
 
     public void setTipo(String tipo) {this.tipo = tipo;}
+
+    public boolean isAtivo() {return ativo;}
+
+    public void setAtivo(boolean ativo) {this.ativo = ativo;}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {return perfis;}
