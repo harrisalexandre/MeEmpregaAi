@@ -23,7 +23,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -32,6 +34,9 @@ public class EmpregadorController {
 
     @Autowired
     private EmpregadorRepository empregadorRepository;
+
+    @Autowired
+    private EmpregadoRepository empregadoRepository;
 
     @Autowired
     private PerfilRepository perfilRepository;
@@ -44,13 +49,34 @@ public class EmpregadorController {
         Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(2l));
 
         if(optionalPerfil.isPresent()){
-            Set<Perfil> perfis = new HashSet<>();
-            perfis.add(optionalPerfil.get());
-            empregador.setPerfis(perfis);
+            List<Perfil> perfils = new ArrayList<>();
+            perfils.add(optionalPerfil.get());
+            empregador.setPerfis(perfils);
             empregadorRepository.save(empregador);
             URI uri = uriBuilder.path("/empregador/{id}").buildAndExpand(empregador.getId()).toUri();
 
             return ResponseEntity.created(uri).body(new EmpregadorDto(empregador));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{idEmpregador}/contratar/{idEmpregado}")
+    @Transactional
+    @CacheEvict(value = "listaEmpregador",allEntries = true)
+    public ResponseEntity<EmpregadorDto> contratarEmpregado (@PathVariable Long idEmpregador, @AuthenticationPrincipal Usuario logado, @PathVariable Long idEmpregado) {
+        Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(idEmpregador));
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(idEmpregado));
+
+        if(optionalEmpregador.isPresent() && optionalEmpregado.isPresent()){
+            Empregador empregador = optionalEmpregador.get();
+            if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
+                Empregado empregado = optionalEmpregado.get();
+                empregador.getEmpregados().add(empregado);
+                empregadorRepository.save(empregador);
+
+                return ResponseEntity.ok(new EmpregadorDto(empregador));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -62,6 +88,21 @@ public class EmpregadorController {
         List<Empregador> empregadores = empregadorRepository.findAll(form.toSpec(), pageable).getContent();
         if(empregadores.size()> 0) {
             return ResponseEntity.ok(EmpregadorDto.converter(empregadores));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/empregados")
+    @Cacheable(value = "listaEmpregadosDoEmpregador")
+    public ResponseEntity<?> listaEmpregadosDoEmpregador (@PathVariable Long id){
+
+        Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(id));
+
+        if(optionalEmpregador.isPresent()){
+            Empregador empregador = optionalEmpregador.get();
+            List<Empregado> empregados = empregador.getEmpregados();
+
+            return ResponseEntity.ok(EmpregadoDto.converter(empregados));
         }
         return ResponseEntity.notFound().build();
     }
@@ -89,8 +130,8 @@ public class EmpregadorController {
         if(optionalEmpregador.isPresent()) {
             Empregador empregador = optionalEmpregador.get();
             if(logado.getId().equals(empregador.getId()) && logado.getTipo().equals(empregador.getTipo())){
-                empregador = form.atualizar(empregador.getId(), empregadorRepository);
-                return ResponseEntity.ok(new EmpregadorDto(empregador));
+                Empregador empregador1 = form.atualizar(empregador.getEmpregador().getId(), empregadorRepository);
+                return ResponseEntity.ok(new EmpregadorDto(empregador1));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -128,4 +169,5 @@ public class EmpregadorController {
         }
         return ResponseEntity.notFound().build();
     }
+
 }

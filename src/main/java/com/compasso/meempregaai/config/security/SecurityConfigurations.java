@@ -42,7 +42,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+    	http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and().authorizeRequests()
+        
+      //  http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/empregado").permitAll()
@@ -70,12 +72,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/empregador/*").hasRole("EMPREGADOR")
                 .antMatchers(HttpMethod.POST, "/empregador/*").hasRole("EMPREGADOR")
 
-//                .antMatchers(HttpMethod.POST, "/empregado/*/curtir").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.POST, "/vaga/*candidatar/*").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.POST, "/vaga/*/curtir").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.POST, "/empregador/*/contratar/*").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.POST, "/vaga").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.DELETE, "/vaga/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/empregado/*/curtir").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/vaga/*candidatar/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/vaga/*/curtir").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/empregador/*/contratar/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/vaga").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/vaga/*").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
                 .and().csrf().disable()

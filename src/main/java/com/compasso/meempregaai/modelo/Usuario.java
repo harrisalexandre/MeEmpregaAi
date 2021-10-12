@@ -4,7 +4,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @MappedSuperclass
 public class Usuario implements UserDetails {
@@ -18,7 +20,7 @@ public class Usuario implements UserDetails {
     private boolean ativo;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Perfil> perfis = new HashSet<>();
+    private List<Perfil> perfis = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -48,11 +50,9 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
-    public Set<Perfil> getPerfis() {
-        return perfis;
-    }
+    public List<Perfil> getPerfis() {return perfis;}
 
-    public void setPerfis(Set<Perfil> perfis) {
+    public void setPerfis(List<Perfil> perfis) {
         this.perfis = perfis;
     }
 

@@ -28,7 +28,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/empregado")
@@ -52,9 +54,9 @@ public class EmpregadoController {
         Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(1l));
 
         if(optionalPerfil.isPresent()){
-            Set<Perfil> perfis = new HashSet<>();
-            perfis.add(optionalPerfil.get());
-            empregado.setPerfis(perfis);
+            List<Perfil> perfils = new ArrayList<>();
+            perfils.add(optionalPerfil.get());
+            empregado.setPerfis(perfils);
             Curriculo curriculo = new Curriculo(empregado);
             curriculoRepository.save(curriculo);
             empregado.setCurriculo(curriculo);
@@ -100,6 +102,53 @@ public class EmpregadoController {
         List<Empregado> empregados = empregadoRepository.findAll(form.toSpec(), pageable).getContent();
         if(empregados.size()> 0) {
             return ResponseEntity.ok(EmpregadoDto.converter(empregados));
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @GetMapping("/{id}/curriculo")
+    @Cacheable(value = "buscarCurriculoPorId")
+    public ResponseEntity<?> detalhaCurriculo (@PathVariable Long id){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Curriculo curriculo = optionalEmpregado.get().getCurriculo();
+            return ResponseEntity.ok(new CurriculoDto(curriculo));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/curriculo")
+    @Transactional
+    @CacheEvict(value = "buscarCurriculoPorId",allEntries = true)
+    public ResponseEntity<?> atualizaCurriculo (@PathVariable Long id, @AuthenticationPrincipal Usuario logado, @RequestBody @Valid AtualizaCurriculoForm form){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                Curriculo curriculo = form.atualizar(empregado.getCurriculo().getId(), curriculoRepository);
+                return ResponseEntity.ok(new CurriculoDto(curriculo));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}/curriculo")
+    @Transactional
+    @CacheEvict(value = "buscarCurriculoPorId",allEntries = true)
+    public ResponseEntity<?> resetarCurriculo (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+
+        Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(id));
+
+        if(optionalEmpregado.isPresent()) {
+            Empregado empregado = optionalEmpregado.get();
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+                Curriculo curriculo = new AtualizaCurriculoForm().resetar(empregado.getCurriculo().getId(), curriculoRepository);
+                return ResponseEntity.ok(new CurriculoDto(curriculo));}
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -152,4 +201,7 @@ public class EmpregadoController {
         }
         return ResponseEntity.notFound().build();
     }
+
+
+
 }
