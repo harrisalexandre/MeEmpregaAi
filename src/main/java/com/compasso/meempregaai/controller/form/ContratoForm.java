@@ -3,19 +3,17 @@ package com.compasso.meempregaai.controller.form;
 import com.compasso.meempregaai.modelo.Contrato;
 import com.compasso.meempregaai.modelo.Empregado;
 import com.compasso.meempregaai.modelo.Empregador;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
 public class ContratoForm {
 
 
+    @NotNull
     private LocalDate dataFinal;
-
+    @NotNull
     private long empregadoId;
-
+    @NotNull
     private long empregadorId;
 
     public Contrato converter(ContratoForm contratoForm, Empregado empregado, Empregador empregador) {
