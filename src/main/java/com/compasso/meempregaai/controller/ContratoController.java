@@ -90,7 +90,7 @@ public class ContratoController {
     @PostMapping("empregador/contratar")
     @Transactional
     @CacheEvict(value = "listaEmpregador",allEntries = true)
-    public ResponseEntity<EmpregadorDto> contratarEmpregado (@RequestBody @Valid ContratoForm form, @AuthenticationPrincipal Usuario logado) {
+    public ResponseEntity<ContratoDto> contratarEmpregado (@RequestBody @Valid ContratoForm form, @AuthenticationPrincipal Usuario logado) {
         Optional<Empregador> optionalEmpregador = Optional.ofNullable(empregadorRepository.findById(form.getEmpregadorId()));
         Optional<Empregado> optionalEmpregado = Optional.ofNullable(empregadoRepository.findById(form.getEmpregadoId()));
         if(optionalEmpregador.isPresent() && optionalEmpregado.isPresent()){
@@ -101,7 +101,7 @@ public class ContratoController {
                 Contrato contrato = form.converter(form, empregado, empregador);
                 contratoRepository.save(contrato);
 
-                return ResponseEntity.ok(new EmpregadorDto(empregador));
+                return ResponseEntity.ok(new ContratoDto(contrato));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
