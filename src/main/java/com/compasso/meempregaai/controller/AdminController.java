@@ -86,6 +86,7 @@ public class AdminController {
         }
         return ResponseEntity.notFound().build();
     }
+
     @PutMapping("/{id}")
     @CacheEvict(value = "listarAdmin",allEntries = true)
     @Transactional
@@ -134,5 +135,22 @@ public class AdminController {
 
         List<Empregador> empregadores = empregadorRepository.findAll(form.toSpec(), pageable).getContent();
         return ResponseEntity.ok(EmpregadorDto.converter(empregadores));
+    }
+
+    @PostMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> reativarAdmin (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+        Optional <Admin> optionalAdmin = Optional.ofNullable(adminRepository.findById(id));
+
+        if (optionalAdmin.isPresent() && logado.isAtivo()){
+            Admin admin = optionalAdmin.get();
+            Admin admin1 = admin.getAdmin();
+            if (logado.getId().equals(admin1.getId()) && logado.getTipo().equals(admin1.getTipo())|| logado.getTipo().equals(Admin.class.getSimpleName())){
+                admin.setAtivo(true);
+                return ResponseEntity.ok(new AdminDto(optionalAdmin.get()));
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -1,7 +1,5 @@
 package com.compasso.meempregaai.modelo;
 
-import com.compasso.meempregaai.controller.dto.AdminDto;
-
 import javax.persistence.*;
 
 @Entity
@@ -16,8 +14,11 @@ public class Admin extends Usuario{
         this.setAtivo(true);
     }
 
-
     public Admin() {
 
+    }
+
+    public Admin getAdmin(){
+        return getAdmin();
     }
 }
