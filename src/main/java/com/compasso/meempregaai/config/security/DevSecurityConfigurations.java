@@ -21,7 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 @EnableWebSecurity
 @Configuration
-@Profile("dev")
+@Profile(value = {"dev", "test"})
 public class DevSecurityConfigurations extends WebSecurityConfigurerAdapter {
 
     @Autowired

@@ -107,19 +107,18 @@ public class AdminController {
     @DeleteMapping("/{id}")
     @CacheEvict(value = "listarAdmin",allEntries = true)
     @Transactional
-    public ResponseEntity<?> inativarAdmin (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+    public ResponseEntity<?> inativarAdmin (@PathVariable Long id){
 
-        Optional<Admin> optionalAdmin = Optional.ofNullable(adminRepository.findById(id));
+        Optional<Admin> optionalAdmin= Optional.ofNullable(adminRepository.findById(id));
 
         if(optionalAdmin.isPresent()) {
             Admin admin = optionalAdmin.get();
-            if(logado.getId().equals(admin.getId()) && logado.getTipo().equals(admin.getTipo())){
-                admin.setAtivo(false);
-                return ResponseEntity.ok(new AdminDto(admin));}
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            admin.setAtivo(false);
+            return ResponseEntity.ok(new AdminDto(admin));
         }
         return ResponseEntity.notFound().build();
     }
+
 
     @GetMapping("/empregado")
     @Cacheable(value = "listarUmEmpregado")

@@ -20,14 +20,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class VagaControllerTest {
+class CurriculoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void devolve200AodetalharVaga() throws Exception {
-        URI uri = new URI("/vaga/1");
+    void devolve200AoDetalharCurriculo() throws Exception {
+
+        URI uri = new URI("/empregado/1/curriculo");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -37,8 +38,9 @@ class VagaControllerTest {
     }
 
     @Test
-    void devolve400AodetalharVagaInexistente() throws Exception {
-        URI uri = new URI("/vaga/999");
+    void devolve404AoDetalharCurriculoInexistente() throws Exception {
+
+        URI uri = new URI("/empregado/999/curriculo");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -47,14 +49,4 @@ class VagaControllerTest {
                         .is(404));
     }
 
-    @Test
-    void devolve200AoListaVagas()  throws Exception {
-        URI uri = new URI("/vaga");
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get(uri)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .is(200));
-    }
 }

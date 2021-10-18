@@ -16,18 +16,37 @@ import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class VagaControllerTest {
+class EmpregadorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void devolve200AodetalharVaga() throws Exception {
-        URI uri = new URI("/vaga/1");
+    void devolve201AoCadastrarEmpregador() throws Exception {
+        URI uri = new URI("/empregador");
+        String json = "{\"nome\": \"empregador2\"," +
+                "\"empresa\": \"empresa tal\"," +
+                "\"cnpj\": \"34234324\"," +
+                "\"email\": \"empregador2@gmail.com\"," +
+                "\"senha\": \"123456\"}";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post(uri)
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .is(201));
+    }
+
+    @Test
+    void devolve200AoDetalharEmpregadorPorId() throws Exception {
+        URI uri = new URI("/empregador/1");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -37,8 +56,8 @@ class VagaControllerTest {
     }
 
     @Test
-    void devolve400AodetalharVagaInexistente() throws Exception {
-        URI uri = new URI("/vaga/999");
+    void devolve404AoDetalharEmpregadorPorIdInexistente() throws Exception {
+        URI uri = new URI("/empregador/999");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -48,8 +67,8 @@ class VagaControllerTest {
     }
 
     @Test
-    void devolve200AoListaVagas()  throws Exception {
-        URI uri = new URI("/vaga");
+    void devolve200AoListarEmpregadores() throws Exception {
+        URI uri = new URI("/empregador");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))

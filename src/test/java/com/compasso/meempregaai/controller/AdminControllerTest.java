@@ -13,21 +13,38 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class VagaControllerTest {
+
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void devolve200AodetalharVaga() throws Exception {
-        URI uri = new URI("/vaga/1");
+    void devolve201AoCadastrarAdmin() throws Exception {
+        URI uri = new URI("/admin");
+        String json = "{\"nome\": \"admin100\", \"email\": \"admin100@gmail.com\", \"senha\": \"123456\"}";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post(uri)
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .is(201));
+    }
+
+    @Test
+    void devolve200AolistarAdmins() throws Exception {
+        URI uri = new URI("/admin");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -37,8 +54,8 @@ class VagaControllerTest {
     }
 
     @Test
-    void devolve400AodetalharVagaInexistente() throws Exception {
-        URI uri = new URI("/vaga/999");
+    void devolve404AodetalharAdminPorIdInexistente() throws Exception {
+        URI uri = new URI("/admin/999");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -47,11 +64,24 @@ class VagaControllerTest {
                         .is(404));
     }
 
+
     @Test
-    void devolve200AoListaVagas()  throws Exception {
-        URI uri = new URI("/vaga");
+    void devolve200AodetalharAdminPorId() throws Exception {
+        URI uri = new URI("/admin/1");
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .is(200));
+    }
+
+
+    @Test
+    void inativarAdmin() throws Exception {
+        URI uri = new URI("/admin/1");
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete(uri)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers
                         .status()
