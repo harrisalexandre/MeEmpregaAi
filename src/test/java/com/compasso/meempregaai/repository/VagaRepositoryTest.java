@@ -1,6 +1,6 @@
 package com.compasso.meempregaai.repository;
 
-import com.compasso.meempregaai.modelo.Empregado;
+import com.compasso.meempregaai.modelo.Vaga;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,30 +10,28 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 
-class EmpregadoRepositoryTest {
+public class VagaRepositoryTest {
 
     @Autowired
-    private EmpregadoRepository empregadoRepository;
+    private VagaRepository vagaRepository;
 
     @Test
-    public void retornaEmpregadoPorId(){
-        long empregadoId = 1;
-        Empregado empregado = empregadoRepository.findById(empregadoId);
-        Assertions.assertNotNull(empregado);
-        Assertions.assertEquals(empregado.getId(), empregadoId);
+    public void retornaVagaPorId(){
+        long vagaId = 1;
+        Vaga vaga = vagaRepository.findById(vagaId);
+        Assertions.assertNotNull(vaga);
+        Assertions.assertEquals(vaga.getId(),vagaId);
     }
 
     @Test
-    public void naoRetornaEmpregadoPorId(){
-        long empregadoId = 99999;
-        Empregado empregado = empregadoRepository.findById(empregadoId);
-        Assertions.assertNull(empregado);
-
+    public void naoRetornaVagaPorId(){
+        long vagaId = 99999;
+        Vaga vaga = vagaRepository.findById(vagaId);
+        Assertions.assertNull(vaga);
     }
 }

@@ -1,13 +1,7 @@
 package com.compasso.meempregaai.controller;
-import com.compasso.meempregaai.controller.dto.CurriculoDto;
-import com.compasso.meempregaai.controller.dto.EmpregadoDto;
 import com.compasso.meempregaai.controller.dto.EmpregadorDto;
-import com.compasso.meempregaai.controller.form.AtualizaCurriculoForm;
-import com.compasso.meempregaai.controller.form.BuscaEmpregadoForm;
-import com.compasso.meempregaai.controller.form.BuscaEmpregadorForm;
 import com.compasso.meempregaai.controller.form.EmpregadorForm;
 import com.compasso.meempregaai.modelo.*;
-import com.compasso.meempregaai.repository.EmpregadoRepository;
 import com.compasso.meempregaai.repository.EmpregadorRepository;
 import com.compasso.meempregaai.repository.PerfilRepository;
 import com.compasso.meempregaai.repository.VagaRepository;

@@ -1,6 +1,7 @@
 package com.compasso.meempregaai.repository;
 
-import com.compasso.meempregaai.modelo.Empregado;
+
+import com.compasso.meempregaai.modelo.Curriculo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,30 +11,28 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 
-class EmpregadoRepositoryTest {
+public class CurriculoRepositoryTest {
 
     @Autowired
-    private EmpregadoRepository empregadoRepository;
+    private CurriculoRepository curriculoRepository;
 
     @Test
-    public void retornaEmpregadoPorId(){
-        long empregadoId = 1;
-        Empregado empregado = empregadoRepository.findById(empregadoId);
-        Assertions.assertNotNull(empregado);
-        Assertions.assertEquals(empregado.getId(), empregadoId);
+    public void retornaCurriculoPorId(){
+        long curriculoId = 1;
+        Curriculo curriculo = curriculoRepository.findById(curriculoId);
+        Assertions.assertNotNull(curriculo);
+        Assertions.assertEquals(curriculo.getId(),curriculoId);
     }
 
     @Test
-    public void naoRetornaEmpregadoPorId(){
-        long empregadoId = 99999;
-        Empregado empregado = empregadoRepository.findById(empregadoId);
-        Assertions.assertNull(empregado);
-
+    public void naoRetornaCurriculoPorId(){
+        long curriculoId = 99999;
+        Curriculo curriculo = curriculoRepository.findById(curriculoId);
+        Assertions.assertNull(curriculo);
     }
 }
