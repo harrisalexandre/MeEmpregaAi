@@ -1,0 +1,1062 @@
+openapi: 3.0.1
+info:
+  title: Me Emprega Ai
+  description: Projeto final do estagio de Spring Boot da Compasso
+  version: 1.0.0
+  termsOfService: https://mockapi.io
+  contact:
+    name: Exemplo
+    email: exemplo@email.com
+  license:
+    name: "Lincença: GPLv3"
+    url: https://www.gnu.org/licenses/glp-3.0.html~
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /auth:
+    post:
+      summary: Autentica um usúario
+      tags:
+      - Publicos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginForm"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/TokenDto"
+        400:
+          description:  Dados invalidos
+          content:
+            application/json:
+              example: Bad Request
+
+  /empregado:
+    get:
+      summary: Recupera todos os empregados ativos
+      tags:
+      - Publicos
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmpregadoDto"
+
+    post:
+      summary: Cadastra um Empregado
+      tags:
+      - Publicos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmpregadoForm"
+      responses:
+        201:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Perfil do usuario não encontrado
+          content:
+            application/json:
+              example: Not Found
+
+  /empregado/{id}/curtir:
+    post:
+      summary: Curte um empregado por Id
+      tags:
+      - Empregador
+      security:
+      - auth: []
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregado/{id}:
+    get:
+      summary: Recupera um empregado por Id
+      tags:
+      - Publicos
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+    put:
+      summary: Atualiza um empregado por Id
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizaEmpregadoForm"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    post:
+      summary: Reativa um empregado por Id
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    delete:
+      summary: Inativa um empregado por Id
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregado/{id}/curriculo:
+    get:
+      summary: Recupera um Curriculo pelo Id do Empregado
+      tags:
+      - Publicos
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/CurriculoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+    put:
+      summary: Atualiza um Curriculo pelo Id do Empregado
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizaCurriculoForm"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/CurriculoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    delete:
+      summary: Reseta um Curriculo pelo Id do Empregado
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/CurriculoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /vaga:
+    get:
+      summary: Recupera todas as vagas filtrando por ativas e empregador
+      tags:
+      - Publicos
+      parameters:
+      - name: ativa
+        in: query
+        schema:
+          type: boolean
+        required: false
+      - name: empregador
+        in: query
+        schema:
+          type: integer
+        required: false
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VagaDto"
+
+    post:
+      summary: Cadastra uma vaga
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VagaForm"
+      responses:
+        201:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadoDto"
+        404:
+          description:  Empregador não encontrado
+          content:
+            application/json:
+              example: Not Found
+
+  /vaga/{id}:
+    get:
+      summary: Recupera uma Vaga por Id
+      tags:
+      - Publicos
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/VagaDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+    post:
+      summary: Reativa uma Vaga por Id
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/VagaDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    delete:
+      summary: Inativa uma Vaga por Id
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/VagaDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /vaga/{id}/curtir:
+    post:
+      summary: Curte uma Vaga por Id
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/VagaDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /vaga/{idEmpregado}/candidatar/{idVaga}:
+    post:
+      summary: Candidata empregado por Id a uma vaga por Id
+      security:
+      - auth: []
+      tags:
+      - Empregado
+
+      parameters:
+      - name: idEmpregado
+        in: path
+        schema:
+          type: integer
+        required: true
+      - name: idVaga
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/VagaDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregado/{id}/contratos:
+    get:
+      summary: Recupera contratos pelo id do empregado
+      security:
+      - auth: []
+      tags:
+      - Empregado
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContratoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregador/{id}/contratos:
+    get:
+      summary: Recupera contratos pelo id do empregador
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContratoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregador/contratar:
+    post:
+      summary: Empregador contrata um empregado
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContratoForm"
+      responses:
+        201:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/ContratoDto"
+        404:
+          description:  Empregador ou Empregado não encontrado
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregador/contrato/{id}:
+    delete:
+      summary: Inativa um contrato pelo Id
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/ContratoDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /empregador:
+    get:
+      summary: Recupera todos os empregadores ativos
+      tags:
+      - Publicos
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmpregadorDto"
+
+    post:
+      summary: Cadastra um Empregador
+      tags:
+      - Publicos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmpregadorForm"
+      responses:
+        201:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadorDto"
+        404:
+          description:  Perfil do usuario não encontrado
+          content:
+            application/json:
+              example: Not Found
+
+  /empregador/{id}:
+    get:
+      summary: Recupera um empregador por Id
+      tags:
+      - Publicos
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadorDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+    put:
+      summary: Atualiza um empregador por Id
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizaEmpregadorForm"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadorDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    post:
+      summary: Reativa um empregador por Id
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadorDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    delete:
+      summary: Inativa um empregador por Id
+      security:
+      - auth: []
+      tags:
+      - Empregador
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/EmpregadorDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+tags:
+- name: Publicos
+  description: Endpoints publicos
+
+- name: Empregado
+  description: Endpoints do empregado
+
+- name: Empregador
+  description: Endpoints do empregador
+
+- name: Admin
+  description: Endpoints do Admin
+
+components:
+
+  securitySchemes:
+    auth:
+      type: http
+      scheme: bearer
+
+  schemas:
+
+    EmpregadoDto:
+      description: Retorno do DTO da entidade Empregado
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cpf:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        curtidas:
+          type: integer
+        ativo:
+          type: boolean
+
+    EmpregadorDto:
+      description: Retorno do DTO da entidade Empregador
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        empresa:
+          type: string
+        cnpj:
+          type: string
+        ativo:
+          type: boolean
+
+    CurriculoDto:
+      description: Retorna o DTO da entidade Curriculo
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        contato:
+          type: string
+        endereco:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        experienciaProficional:
+          type: string
+        escolaridade:
+          type: string
+        conhecimentoHabilidades:
+          type: string
+
+    ContratoDto:
+      description: Retorna o DTO da entidade Contrato
+      type: object
+      properties:
+        id:
+          type: integer
+        dataInicio:
+          type: string
+          format: date
+        dataFinal:
+          type: string
+          format: date
+        ativo:
+          type: boolean
+        empregado:
+          $ref: "#/components/schemas/EmpregadoDto"
+        empregador:
+          $ref: "#/components/schemas/EmpregadorDto"
+
+    AdminDto:
+      description: Retorna o DTO da entidade Admin
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        email:
+          type: string
+        ativo:
+          type: boolean
+
+    VagaDto:
+      description: Retorna o DTO da entidade Vaga
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        nomeEmpregador:
+          type: string
+        descricao:
+          type: string
+        ativa:
+          type: boolean
+        curtidas:
+          type: integer
+        candidatos:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmpregadoDto"
+
+    TokenDto:
+      description: Retorna Dto do token
+      type: object
+      properties:
+        token:
+          type: string
+        tipo:
+          type: string
+
+    AdminForm:
+      description: Form para cadastro de admin
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+
+    ContratoForm:
+      description: Form para inserção de Contrato
+      type: object
+      properties:
+        dataFinal:
+          type: string
+          format: date
+        empregadoId:
+          type: integer
+        empregadorId:
+          type: integer
+
+    EmpregadoForm:
+      description: Form para cadastro de Empregador
+      type: object
+      properties:
+        nome:
+          type: string
+        cpf:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        email:
+          type: string
+        senha:
+          type: string
+
+    EmpregadorForm:
+      description: Form para cadastro de Empregador
+      type: object
+      properties:
+        nome:
+          type: string
+        empresa:
+          type: string
+        cnpj:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+
+    LoginForm:
+      description: Form para autenticação
+      type: object
+      properties:
+        email:
+          type: string
+        senha:
+          type: string
+
+    VagaForm:
+      description: Form para cadastro de Vaga
+      type: object
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+        empregadorId:
+          type: string
+
+    AtualizaCurriculoForm:
+      description: Form para atualização de Curriculo
+      type: object
+      properties:
+        contato:
+          type: string
+        endereco:
+          type: string
+        eexperienciaProficional:
+          type: string
+        escolaridade:
+          type: string
+        conhecimentoHabilidades:
+          type: string
+
+    AtualizaEmpregadoForm:
+      description: Form para atualização do Empregado
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+
+    AtualizaEmpregadorForm:
+      description: Form para atualização do Empregador
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+        empresa:
+          type: string
+        cnpj:
+          type: string

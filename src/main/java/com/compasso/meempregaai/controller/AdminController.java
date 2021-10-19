@@ -47,23 +47,26 @@ public class AdminController {
     @CacheEvict(value = "listarAdmin",allEntries = true)
     public ResponseEntity<AdminDto> cadastrarAdmin(@RequestBody @Valid AdminForm adminForm, UriComponentsBuilder uriBuilder) {
 
-        Admin admin = adminForm.converter(adminForm);
-        Optional<Perfil> op1= Optional.ofNullable(perfilRepository.findById(3l));
-        Optional<Perfil> op2 = Optional.ofNullable(perfilRepository.findById(2l));
-        Optional<Perfil> op3 = Optional.ofNullable(perfilRepository.findById(1l));
+        if(adminForm.emailNaoUsado(empregadoRepository, empregadorRepository, adminRepository)){
+            Admin admin = adminForm.converter(adminForm);
+            Optional<Perfil> op1= Optional.ofNullable(perfilRepository.findById(3l));
+            Optional<Perfil> op2 = Optional.ofNullable(perfilRepository.findById(2l));
+            Optional<Perfil> op3 = Optional.ofNullable(perfilRepository.findById(1l));
 
-        if (op1.isPresent() && op2.isPresent() && op3.isPresent()){
-            Set<Perfil> perfis = new HashSet<>();
-            perfis.add(op1.get());
-            perfis.add(op2.get());
-            perfis.add(op3.get());
-            admin.setPerfis(perfis);
-            adminRepository.save(admin);
-            URI uri = uriBuilder.path("/admin/{id}").buildAndExpand(admin.getId()).toUri();
+            if (op1.isPresent() && op2.isPresent() && op3.isPresent()){
+                Set<Perfil> perfis = new HashSet<>();
+                perfis.add(op1.get());
+                perfis.add(op2.get());
+                perfis.add(op3.get());
+                admin.setPerfis(perfis);
+                adminRepository.save(admin);
+                URI uri = uriBuilder.path("/admin/{id}").buildAndExpand(admin.getId()).toUri();
 
-            return ResponseEntity.created(uri).body(new AdminDto(admin));
+                return ResponseEntity.created(uri).body(new AdminDto(admin));
+            }
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping
@@ -138,17 +141,13 @@ public class AdminController {
 
     @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> reativarAdmin (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
+    public ResponseEntity<?> reativarAdmin (@PathVariable Long id){
         Optional <Admin> optionalAdmin = Optional.ofNullable(adminRepository.findById(id));
 
-        if (optionalAdmin.isPresent() && logado.isAtivo()){
+        if (optionalAdmin.isPresent()){
             Admin admin = optionalAdmin.get();
-            Admin admin1 = admin.getAdmin();
-            if (logado.getId().equals(admin1.getId()) && logado.getTipo().equals(admin1.getTipo())|| logado.getTipo().equals(Admin.class.getSimpleName())){
-                admin.setAtivo(true);
-                return ResponseEntity.ok(new AdminDto(optionalAdmin.get()));
-            }
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            admin.setAtivo(true);
+            return ResponseEntity.ok(new AdminDto(admin));
         }
         return ResponseEntity.notFound().build();
     }

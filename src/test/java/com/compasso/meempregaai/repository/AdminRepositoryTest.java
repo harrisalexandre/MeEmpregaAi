@@ -46,7 +46,7 @@ public class AdminRepositoryTest {
     public void naoRetornaAdminPorEmail(){
         String adminEmail = "admin99999@gmail.com";
         Admin admin = adminRepository.findByEmail(adminEmail);
-        Assertions.assertNotNull(admin);
+        Assertions.assertNull(admin);
     }
 
 }

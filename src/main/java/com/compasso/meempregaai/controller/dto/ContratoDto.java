@@ -14,16 +14,16 @@ public class ContratoDto {
     private LocalDate dataInicio;
     private LocalDate dataFinal;
     private boolean ativo;
-    private Empregador empregador;
-    private Empregado empregado;
+    private EmpregadorDto empregador;
+    private EmpregadoDto empregado;
 
     public ContratoDto(Contrato contrato) {
         this.id = contrato.getId();
         this.dataInicio = contrato.getDataInicio();
         this.dataFinal = contrato.getDataFinal();
         this.ativo = contrato.isAtivo();
-        this.empregador = contrato.getEmpregador();
-        this.empregado = contrato.getEmpregado();
+        this.empregador = new EmpregadorDto(contrato.getEmpregador());
+        this.empregado = new EmpregadoDto(contrato.getEmpregado());
     }
 
     public static List<ContratoDto> converter(List<Contrato> contratos) {

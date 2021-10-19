@@ -37,7 +37,9 @@ public class AutenticacaoService implements UserDetailsService {
         }else if(optionalEmpregador.isPresent()){
             return optionalEmpregador.get();
         }else if(optionalAdmin.isPresent()) {
-            return optionalAdmin.get();
+            if(optionalAdmin.get().isAtivo()){
+                return optionalAdmin.get();
+            }
         }
         throw new UsernameNotFoundException("Dados inválidos!");
     }

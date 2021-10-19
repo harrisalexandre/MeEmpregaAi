@@ -9,25 +9,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
-public class EmpregadoForm {
+public class EmpregadoForm extends CadastroUsuarioForm {
 
-    @NotBlank
-    private String nome;
     @NotBlank
     private String cpf;
     @NotNull @Past
     private LocalDate dataNascimento;
-    @Email
-    private String email;
-    @NotBlank
-    private String senha;
+
 
     public Empregado converter(EmpregadoForm empregadoForm) {
-        return new Empregado(nome, cpf, dataNascimento, email, new BCryptPasswordEncoder().encode(senha));
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+        return new Empregado(getNome(), cpf, dataNascimento, getEmail(), new BCryptPasswordEncoder().encode(getSenha()));
     }
 
     public void setCpf(String cpf) {
@@ -38,7 +29,4 @@ public class EmpregadoForm {
         this.dataNascimento = dataNascimento;
     }
 
-    public void setEmail(String email) {this.email = email;}
-
-    public void setSenha(String senha) {this.senha = senha;}
 }

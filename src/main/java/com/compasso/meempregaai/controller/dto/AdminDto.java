@@ -12,12 +12,13 @@ public class AdminDto {
     private Long id;
     private String nome;
     private String email;
-
+    private boolean ativo;
 
     public AdminDto(Admin admin) {
         this.id = admin.getId();
         this.nome = admin.getNome();
         this.email = admin.getEmail();
+        this.ativo = admin.isAtivo();
     }
 
     public static List<AdminDto> converter(List<Admin> admins) {
@@ -47,5 +48,7 @@ public class AdminDto {
         this.email = email;
     }
 
-
+    public boolean isAtivo() {
+        return ativo;
+    }
 }

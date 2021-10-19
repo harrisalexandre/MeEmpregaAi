@@ -48,7 +48,7 @@ public class EmpregadorRepositoryTest {
     public void naoRetornaEmpregadorPorEmail(){
         String empregadorEmail = "empregador99999@gmail.com";
         Empregador empregador = empregadorRepository.findByEmail(empregadorEmail);
-        Assertions.assertNotNull(empregador);
+        Assertions.assertNull(empregador);
     }
 
 }
