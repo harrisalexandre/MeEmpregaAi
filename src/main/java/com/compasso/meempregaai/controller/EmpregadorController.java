@@ -2,9 +2,7 @@ package com.compasso.meempregaai.controller;
 import com.compasso.meempregaai.controller.dto.EmpregadorDto;
 import com.compasso.meempregaai.controller.form.EmpregadorForm;
 import com.compasso.meempregaai.modelo.*;
-import com.compasso.meempregaai.repository.EmpregadorRepository;
-import com.compasso.meempregaai.repository.PerfilRepository;
-import com.compasso.meempregaai.repository.VagaRepository;
+import com.compasso.meempregaai.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,28 +28,37 @@ public class EmpregadorController {
     private EmpregadorRepository empregadorRepository;
 
     @Autowired
+    private EmpregadoRepository empregadoRepository;
+
+    @Autowired
     private PerfilRepository perfilRepository;
 
     @Autowired
     private VagaRepository vagaRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     @PostMapping
     @CacheEvict(value = "listaEmpregador",allEntries = true)
     public ResponseEntity<EmpregadorDto> cadastrarEmpregador(@RequestBody @Valid EmpregadorForm empregadorForm, UriComponentsBuilder uriBuilder) {
 
-        Empregador empregador = empregadorForm.converter(empregadorForm);
-        Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(2l));
+        if(empregadorForm.emailNaoUsado(empregadoRepository, empregadorRepository, adminRepository)){
+            Empregador empregador = empregadorForm.converter(empregadorForm);
+            Optional<Perfil> optionalPerfil = Optional.ofNullable(perfilRepository.findById(2l));
 
-        if(optionalPerfil.isPresent()){
-            Set<Perfil> perfis = new HashSet<>();
-            perfis.add(optionalPerfil.get());
-            empregador.setPerfis(perfis);
-            empregadorRepository.save(empregador);
-            URI uri = uriBuilder.path("/empregador/{id}").buildAndExpand(empregador.getId()).toUri();
+            if(optionalPerfil.isPresent()){
+                Set<Perfil> perfis = new HashSet<>();
+                perfis.add(optionalPerfil.get());
+                empregador.setPerfis(perfis);
+                empregadorRepository.save(empregador);
+                URI uri = uriBuilder.path("/empregador/{id}").buildAndExpand(empregador.getId()).toUri();
 
-            return ResponseEntity.created(uri).body(new EmpregadorDto(empregador));
+                return ResponseEntity.created(uri).body(new EmpregadorDto(empregador));
+            }
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping

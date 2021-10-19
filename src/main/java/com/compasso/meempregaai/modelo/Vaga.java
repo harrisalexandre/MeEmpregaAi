@@ -16,7 +16,8 @@ public class Vaga {
     private Empregador empregador;
     private String descricao;
     private Boolean ativa;
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "vaga_curtidas", joinColumns = @JoinColumn(name = "vaga_id"), inverseJoinColumns = @JoinColumn(name = "empregado_id"))
     private List<Empregado> curtidas = new ArrayList<>();
 
     @ManyToMany

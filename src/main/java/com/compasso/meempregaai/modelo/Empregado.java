@@ -11,7 +11,8 @@ public class Empregado extends Usuario{
 
 	private String cpf;
 	private LocalDate dataNascimento;
-	@OneToMany
+	@ManyToMany
+	@JoinTable(name = "empregado_curtidas", joinColumns = @JoinColumn(name = "empregado_id"), inverseJoinColumns = @JoinColumn(name = "empregador_id"))
 	private List<Empregador> curtidas = new ArrayList<>();
 	@ManyToMany(mappedBy = "candidatos")
 	private List<Vaga> vagas = new ArrayList<>();
