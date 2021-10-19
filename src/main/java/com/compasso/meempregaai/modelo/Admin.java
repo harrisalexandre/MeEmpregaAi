@@ -14,14 +14,5 @@ public class Admin extends Usuario{
         this.setAtivo(true);
     }
 
-    public Admin() {
-
-    }
-
-    public Admin getAdmin(){
-        return getAdmin();
-    }
-
-
-
+    public Admin() {}
 }

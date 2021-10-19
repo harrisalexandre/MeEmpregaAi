@@ -99,7 +99,7 @@ public class VagaController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "buscarVagaPorId")
+    @Cacheable(value = "buscarListaVaga")
     public ResponseEntity<?> detalhaVaga (@PathVariable Long id){
 
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
@@ -140,6 +140,7 @@ public class VagaController {
 
     @PostMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "buscarListaVaga", allEntries = true)
     public ResponseEntity<?> reativarVaga (@PathVariable Long id, @AuthenticationPrincipal Usuario logado){
 
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));

@@ -1060,4 +1060,3 @@ components:
           type: string
         cnpj:
           type: string
-    
