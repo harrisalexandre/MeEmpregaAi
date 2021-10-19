@@ -41,6 +41,7 @@ public class VagaController {
     public ResponseEntity<VagaDto> cadastrarVaga(@RequestBody @Valid VagaForm vagaForm,@AuthenticationPrincipal Usuario logado, UriComponentsBuilder uriBuilder) {
 
         if(logado.getId().equals(vagaForm.getEmpregadorId()) && logado.getTipo().equals(Empregador.class.getSimpleName()) || logado.getTipo().equals(Admin.class.getSimpleName())){
+
             Vaga vaga = vagaForm.converter(vagaForm, empregadorRepository);
             vagaRepository.save(vaga);
 
@@ -84,16 +85,20 @@ public class VagaController {
         Optional<Vaga> optionalVaga = Optional.ofNullable(vagaRepository.findById(id));
 
         if(optionalVaga.isPresent()){
-            Empregado empregado = empregadoRepository.findById(logado.getId());
             Vaga vaga = optionalVaga.get();;
-            List<Empregado> curtidas = vaga.getCurtidas();
-            if(curtidas.contains(empregado)){
-                 curtidas.remove(empregado);
-            }else{
-                curtidas.add(empregado);
+            if(vaga.isAtiva()){
+                Empregado empregado = empregadoRepository.findById(logado.getId());
+
+                List<Empregado> curtidas = vaga.getCurtidas();
+                if(curtidas.contains(empregado)){
+                    curtidas.remove(empregado);
+                }else{
+                    curtidas.add(empregado);
+                }
+                vaga.setCurtidas(curtidas);
+                return ResponseEntity.ok(new VagaDto(vaga));
             }
-            vaga.setCurtidas(curtidas);
-            return ResponseEntity.ok(new VagaDto(vaga));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.notFound().build();
     }
