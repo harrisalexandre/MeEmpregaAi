@@ -37,6 +37,7 @@ paths:
             application/json:
               example: Bad Request
 
+
   /empregado:
     get:
       summary: Recupera todos os empregados ativos
@@ -801,6 +802,159 @@ paths:
             application/json:
               example: Not Found
 
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+  /admin:
+    get:
+      summary: Recupera todos os admin ativos
+      tags:
+      - Admin
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminDto"
+    post:
+      summary: Cadastra um Admin
+      tags:
+      - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminForm"
+      responses:
+        201:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+        404:
+          description:  Perfil do usuario não encontrado
+          content:
+            application/json:
+              example: Not Found
+  /admin/{id}:
+    get:
+      summary: Recupera um admin por Id
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+    put:
+      summary: Atualiza um admin por Id
+      security:
+      - auth: []
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminForm"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    post:
+      summary: Reativa um admin por Id
+      security:
+      - auth: []
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
+        403:
+          description: Acesso Proibido
+          content:
+            application/json:
+              example: Forbidden
+
+    delete:
+      summary: Inativa um admin por Id
+      security:
+      - auth: []
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/jason:
+              schema:
+                $ref: "#/components/schemas/AdminDto"
+        404:
+          description:  Entidade não encontrada
+          content:
+            application/json:
+              example: Not Found
         403:
           description: Acesso Proibido
           content:
