@@ -118,7 +118,7 @@ public class EmpregadoController {
 
         if(optionalEmpregado.isPresent()) {
             Empregado empregado = optionalEmpregado.get();
-            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
                 empregado.setAtivo(false);
                 return ResponseEntity.ok(new EmpregadoDto(empregado));}
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -135,7 +135,7 @@ public class EmpregadoController {
 
         if(optionalEmpregado.isPresent()) {
             Empregado empregado = optionalEmpregado.get();
-            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo())){
+            if(logado.getId().equals(empregado.getId()) && logado.getTipo().equals(empregado.getTipo()) || logado.getTipo().equals(Admin.class.getSimpleName())){
                 empregado.setAtivo(true);
                 return ResponseEntity.ok(new EmpregadoDto(empregado));}
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
