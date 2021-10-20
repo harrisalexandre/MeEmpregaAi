@@ -600,7 +600,7 @@ paths:
             schema:
               $ref: "#/components/schemas/ContratoForm"
       responses:
-        201:
+        200:
           description: Sucesso
           content:
             application/jason:
@@ -811,6 +811,8 @@ paths:
   /admin:
     get:
       summary: Recupera todos os admin ativos
+      security:
+      - auth: []
       tags:
       - Admin
       responses:
@@ -824,6 +826,8 @@ paths:
                   $ref: "#/components/schemas/AdminDto"
     post:
       summary: Cadastra um Admin
+      security:
+      - auth: []
       tags:
       - Admin
       requestBody:
@@ -846,6 +850,8 @@ paths:
   /admin/{id}:
     get:
       summary: Recupera um admin por Id
+      security:
+      - auth: []
       tags:
       - Admin
       parameters:
